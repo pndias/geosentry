@@ -14,7 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   worker:
-    build: .
+    build: ./api
     container_name: python_worker
     depends_on:
       - db
@@ -23,7 +23,19 @@ services:
       - DB_NAME=geodata
       - DB_USER=postgres
       - DB_PASS=postgres
+    ports:
+      - "8000:8000"
     restart: on-failure
+
+  dashboard:
+    image: nginx:alpine
+    container_name: dashboard_ui
+    ports:
+      - "8080:80"
+    volumes:
+      - ./dashboard:/usr/share/nginx/html
+    depends_on:
+      - worker
 
 volumes:
   postgres_data:
