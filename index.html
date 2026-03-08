@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Eventos Geopolíticos</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; width: 100%; border-radius: 8px; }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h2>Monitoramento Geopolítico Global</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        function getColor(categoria) {
+            switch(categoria) {
+                case 'Militar': return 'red';
+                case 'Politica': return 'blue';
+                case 'Economica': return 'green';
+                default: return 'gray';
+            }
+        }
+
+        async function carregarEventos() {
+            try {
+                const response = await fetch('http://localhost:8000/eventos');
+                const eventos = await response.json();
+
+                eventos.forEach(evento => {
+                    L.circleMarker([evento.lat, evento.lng], {
+                        radius: 8,
+                        fillColor: getColor(evento.categoria),
+                        color: "#000",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    })
+                    .addTo(map)
+                    .bindPopup(`<b>${evento.titulo}</b><br>Categoria: ${evento.categoria}`);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar eventos:", error);
+            }
+        }
+
+        carregarEventos();
+    </script>
+</body>
+</html>
