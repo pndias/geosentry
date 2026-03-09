@@ -10,20 +10,31 @@ load_dotenv()
 # Ferramenta de Busca Real-Time (Serper.dev)
 search_tool = SerperDevTool()
 
-# Configuração de Agentes
+# --- Configuração de Agentes Éticos e Plurais ---
+
 pesquisador = Agent(
-    role='Pesquisador Geopolítico',
-    goal='Identificar notícias reais e recentes (últimas 48h) sobre conflitos e tratados globais.',
-    backstory='Especialista em inteligência de fontes abertas (OSINT) e análise de notícias.',
+    role='Sentinela do Sul Global (OSINT)',
+    goal='Identificar eventos que impactem diretamente a segurança e a soberania das populações no Sul Global.',
+    backstory=(
+        "Você é um analista de inteligência com foco humanitário e popular. "
+        "Sua missão é filtrar o ruído da grande mídia ocidental e focar em como os conflitos "
+        "e tratados afetam a vida do trabalhador, a segurança hídrica, alimentar e a integridade civil. "
+        "Você é honesto, técnico, plural e profundamente comprometido com a paz através da informação."
+    ),
     tools=[search_tool],
     verbose=True,
     allow_delegation=False
 )
 
 analista = Agent(
-    role='Analista de Dados',
-    goal='Formatar os achados do pesquisador em objetos JSON estruturados e validados.',
-    backstory='Engenheiro de dados especializado em transformar texto livre em esquemas rigorosos.',
+    role='Tradutor de Impacto Social',
+    goal='Transformar fatos brutos em insights que ajudem as pessoas a se prepararem para mudanças sistêmicas.',
+    backstory=(
+        "Você é um engenheiro de dados que acredita que a informação deve salvar vidas. "
+        "Seu trabalho é classificar eventos geopolíticos sob uma métrica ética: "
+        "o nível de impacto (1-5) deve refletir o risco à vida humana e à estabilidade social. "
+        "Você busca as correlações que a elite ignora, mas que a classe trabalhadora precisa saber."
+    ),
     verbose=True,
     allow_delegation=False
 )
@@ -31,21 +42,25 @@ analista = Agent(
 def criar_crew_geopolitica():
     tarefa_pesquisa = Task(
         description=(
-            "Use a ferramenta de busca para encontrar os 5 eventos geopolíticos mais relevantes "
-            "das últimas 48 horas. Foque em: 1. Movimentações militares, 2. Novos tratados e 3. Crises econômicas."
-            "\nPara cada evento, identifique: Título, Categoria, Resumo, Localização (País/Coordenadas se possível) e Fonte."
+            "Investigue os 5 eventos mais críticos das últimas 48 horas no cenário global. "
+            "Sua prioridade é identificar movimentos militares, novos acordos econômicos de exploração "
+            "ou mudanças políticas que ameacem o Sul Global. "
+            "Busque por sinais de escalada que possam exigir adaptação ou alerta para a população civil."
         ),
-        expected_output="Um relatório consolidado e detalhado sobre os 5 eventos reais identificados.",
+        expected_output=(
+            "Um relatório focado em impacto humano, soberania e riscos sistêmicos, "
+            "contendo os 5 eventos mais urgentes identificados."
+        ),
         agent=pesquisador
     )
 
     tarefa_analise = Task(
         description=(
-            "Com base no relatório do pesquisador, gere uma lista de objetos JSON seguindo o "
-            "formato do schema EventoGeopolitico. Garanta que as coordenadas sejam floats "
-            "e as chaves de categoria sigam o Enum (Militar, Politica, Economica)."
+            "Traduza o relatório de pesquisa para o formato JSON (schema EventoGeopolitico). "
+            "Defina o impacto (1-5) com base no potencial de sofrimento humano ou ganho de soberania popular. "
+            "Mantenha uma linguagem direta, livre de jargões financeiros desnecessários, focada na clareza para o cidadão comum."
         ),
-        expected_output="Uma string JSON pura contendo a lista de eventos validados.",
+        expected_output="String JSON validada, pronta para visualização no Dashboard GeoSentry.",
         agent=analista
     )
 
@@ -57,11 +72,10 @@ def criar_crew_geopolitica():
     )
 
 if __name__ == "__main__":
-    # Nota: requer OPENAI_API_KEY e SERPER_API_KEY no ambiente
     if not os.getenv("SERPER_API_KEY"):
-        print("ERRO: SERPER_API_KEY não encontrada. Configure seu arquivo .env.")
+        print("ERRO: Configure sua SERPER_API_KEY no .env para ativar a Sentinela.")
     else:
         crew = criar_crew_geopolitica()
         resultado = crew.kickoff()
-        print("\n--- RESULTADO DA EXTRAÇÃO REAL ---")
+        print("\n--- INTELIGÊNCIA GEOSENTRY (Voz do Sul Global) ---")
         print(resultado)
