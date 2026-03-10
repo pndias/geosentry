@@ -1,3 +1,5 @@
+# © 2026 Pablo Dias. Todos os direitos reservados.
+
 import React, { useState, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import { useEvents } from './hooks/useEvents';

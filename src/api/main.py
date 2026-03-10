@@ -1,3 +1,5 @@
+# © 2026 Pablo Dias. Todos os direitos reservados.
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.routers import eventos

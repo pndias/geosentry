@@ -18,4 +18,4 @@ A Inteligência Artificial deve servir para diminuir a assimetria de informaçã
 Acreditamos na inteligência coletiva. O GeoSentry deve permanecer acessível, permitindo que comunidades locais adaptem a ferramenta às suas realidades específicas de sobrevivência e resistência.
 
 ---
-*Assinado pelo Time GeoSentry - Em busca de um mundo de paz, prosperidade e dignidade.*
+*Idealizado por Pablo Dias. Assinado pelo Time GeoSentry - Em busca de um mundo de paz, prosperidade e dignidade.*

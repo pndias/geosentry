@@ -29,3 +29,11 @@ As instruções para subir os contêineres via `docker-compose up` serão adicio
 ├── /agents         # Configuração dos agentes CrewAI
 └── docker-compose.yml
 ```
+
+---
+
+## ⚖️ Copyright & Autoria
+**GeoSentry** é um projeto idealizado, projetado e desenvolvido por **Pablo Dias**.
+
+© 2026 Pablo Dias. Todos os direitos reservados.
+Este software é distribuído sob a Licença MIT. Veja o arquivo `LICENSE` para mais detalhes.

@@ -1,3 +1,5 @@
+# © 2026 Pablo Dias. Todos os direitos reservados.
+
 from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel, Field

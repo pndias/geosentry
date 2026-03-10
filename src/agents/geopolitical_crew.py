@@ -1,3 +1,5 @@
+# © 2026 Pablo Dias. Todos os direitos reservados.
+
 import os
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process
