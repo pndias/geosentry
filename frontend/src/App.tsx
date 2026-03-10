@@ -81,11 +81,21 @@ const App = () => {
   const [mapZoom, setMapZoom] = useState(2);
 
   useEffect(() => {
-    fetch('http://localhost:8000/eventos')
+    fetch('/api/eventos')
       .then(res => res.json())
       .then(data => {
         setEvents(data);
         setFilteredEvents(data);
+      })
+      .catch(err => {
+        console.error("Erro na busca:", err);
+        // Fallback para localhost se o proxy falhar (ambiente de dev local)
+        fetch('http://localhost:8000/eventos')
+          .then(res => res.json())
+          .then(data => {
+            setEvents(data);
+            setFilteredEvents(data);
+          });
       });
   }, []);
 
@@ -126,8 +136,8 @@ const App = () => {
             <span>Sistemas de Monitoramento em Tempo Real</span>
           </div>
           <div className="user-profile">
-            <span>Analista Senior</span>
-            <div className="avatar">PD</div>
+            <span>Sentinela do Sul Global</span>
+            <div className="avatar">GS</div>
           </div>
         </header>
 
