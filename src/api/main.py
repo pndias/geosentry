@@ -1,70 +1,32 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
-from src.core.models import EventoGeopolitico, CategoriaEvento, Coordenadas
+from src.api.routers import eventos
 
-app = FastAPI(title="GeoSentry API", version="1.0.0")
+def create_app() -> FastAPI:
+    """Factory de criação da aplicação FastAPI para facilitar testes e modularidade."""
+    app = FastAPI(
+        title="GeoSentry API",
+        version="1.1.0",
+        description="API para orquestração e consulta de eventos geopolíticos focados no Sul Global."
+    )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    # Configuração de CORS (Em produção, restrija as origens)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-@app.get("/eventos", response_model=List[EventoGeopolitico])
-async def listar_eventos():
-    return [
-        EventoGeopolitico(
-            id=1, titulo="Bloqueio Naval no Mar Vermelho", 
-            categoria=CategoriaEvento.MILITAR, 
-            resumo_analitico="Escalada de tensões marítimas impactando rotas de suprimento vitais para o Sul Global.", 
-            coordenadas=Coordenadas(lat=12.78, lon=43.32), impacto=5,
-            tags=["marítimo", "conflito", "logística"],
-            fontes_citadas=["Relatórios OSINT local", "Agências Regionais"]
-        ),
-        EventoGeopolitico(
-            id=2, titulo="Cúpula de Soberania Amazônica", 
-            categoria=CategoriaEvento.POLITICA, 
-            resumo_analitico="Líderes indígenas e governamentais discutem proteção contra exploração predatória estrangeira.",
-            coordenadas=Coordenadas(lat=-3.11, lon=-60.02), impacto=4,
-            tags=["soberania", "indígena", "recursos"],
-            fontes_citadas=["Conselho Indígena", "Mídia Independente"]
-        ),
-        EventoGeopolitico(
-            id=3, titulo="Acordo Comercial Trans-Africano", 
-            categoria=CategoriaEvento.ECONOMICA, 
-            resumo_analitico="Nova zona de livre comércio visa reduzir dependência do dólar e fortalecer moedas locais.",
-            coordenadas=Coordenadas(lat=-1.29, lon=36.82), impacto=4,
-            tags=["economia", "desdolarização", "África"],
-            fontes_citadas=["Banco Central Regional", "Análise Econômica Sul-Sul"]
-        ),
-        EventoGeopolitico(
-            id=4, titulo="Movimentação de Tropas na Fronteira Leste", 
-            categoria=CategoriaEvento.MILITAR, 
-            resumo_analitico="Exercícios militares não anunciados geram alerta em comunidades civis fronteiriças.",
-            coordenadas=Coordenadas(lat=49.81, lon=24.02), impacto=5,
-            tags=["militar", "alerta", "fronteira"],
-            fontes_citadas=["Monitoramento de Satélite", "Ativistas Locais"]
-        ),
-        EventoGeopolitico(
-            id=5, titulo="Manifestação Simbólica por Justiça Social", 
-            categoria=CategoriaEvento.RELIGIOSA_SIMBOLICA, 
-            resumo_analitico="Milhares se reúnem em ato simbólico contra desigualdade histórica e exploração.",
-            coordenadas=Coordenadas(lat=-23.55, lon=-46.63), impacto=3,
-            tags=["social", "simbolismo", "povo"],
-            fontes_citadas=["Movimentos Sociais", "Imprensa Popular"]
-        ),
-        EventoGeopolitico(
-            id=6, titulo="Inauguração de Porto de Águas Profundas", 
-            categoria=CategoriaEvento.ECONOMICA, 
-            resumo_analitico="Parceria estratégica visa criar novo hub logístico independente de potências tradicionais.",
-            coordenadas=Coordenadas(lat=24.86, lon=66.99), impacto=4,
-            tags=["infraestrutura", "logística", "Ásia"],
-            fontes_citadas=["Ministério da Infraestrutura", "Dados Portuários"]
-        )
-    ]
+    # Inclusão de Rotas
+    app.include_router(eventos.router)
+
+    return app
+
+app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Execução local para ambiente de desenvolvimento
+    uvicorn.run("src.api.main:app", host="0.0.0.0", port=8000, reload=True)
