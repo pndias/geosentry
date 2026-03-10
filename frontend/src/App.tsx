@@ -1,4 +1,4 @@
-# © 2026 Pablo Dias. Todos os direitos reservados.
+// © 2026 Pablo Dias. Todos os direitos reservados.
 
 import React, { useState, useCallback } from 'react';
 import { Menu } from 'lucide-react';
