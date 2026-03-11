@@ -16,11 +16,10 @@ O sistema é baseado em uma **Arquitetura de Microserviços Orientada a Eventos 
     -   Validação de dados via `Pydantic V2`.
 
 3.  **Sentry-Storage (Camada de Dados):**
-    -   `PostgreSQL` com extensão `PostGIS` (essencial para consultas espaciais e geolocalização).
-    -   `Redis` para cache de notícias e filas de agentes.
+    -   `PostgreSQL` com extensão `PostGIS` (Produção) / `SQLite` via SQLAlchemy (Local Dev).
 
 4.  **Sentinel-UI (Frontend):**
-    -   Dashboard SPA (Single Page Application).
+    -   Dashboard SPA (Single Page Application) em `React` + `TypeScript`.
     -   `Leaflet.js` para visualização cartográfica interativa.
 
 5.  **Simbolus-Module (Módulo Analítico Futuro):**
@@ -28,42 +27,40 @@ O sistema é baseado em uma **Arquitetura de Microserviços Orientada a Eventos 
 
 ---
 
-## 🛠️ 2. Stack de Tecnologias Ideal (Fase 1)
+## 🛠️ 2. Stack de Tecnologias Ideal
 
 | Camada | Tecnologia | Justificativa |
 | :--- | :--- | :--- |
 | **Linguagem** | Python 3.11+ | Ecossistema líder em IA e manipulação de dados. |
-| **Framework Web** | FastAPI | Nativo assíncrono, gera documentação OpenAPI automaticamente. |
-| **IA/Agentes** | CrewAI | Melhor framework para colaboração entre múltiplos agentes de IA. |
-| **Banco de Dados** | PostGIS | Única opção robusta para filtrar eventos por "raio de distância" no mapa. |
-| **Infraestrutura** | Docker & Compose | Garante paridade entre ambientes de desenvolvimento e produção. |
-| **Frontend** | Vanilla JS / Leaflet | Leveza e foco total na interação com o mapa geopolítico. |
+| **Framework Web** | FastAPI | Nativo assíncrono, alta performance. |
+| **Banco de Dados** | SQLite / PostGIS | Flexibilidade local e escalabilidade geoespacial. |
+| **Frontend** | React + Vite | Interface de Command Center responsiva e componentizada. |
 
 ---
 
 ## 📈 3. Roadmap de Desenvolvimento
 
-### Fase 1: Fundação e Ingestão Militar/Econômica (Atual)
-- [x] Definição de Schemas Pydantic (V1.0.0).
-- [x] Estrutura Modular de Pastas.
+### Fase 1: Fundação Técnica (Concluída)
+- [x] Definição de Schemas Pydantic e Models SQLAlchemy.
+- [x] Estrutura Modular de Pastas (Clean Architecture).
+- [x] Criação da API FastAPI.
+- [x] Seed Inicial de Banco de Dados Local (100 eventos realistas mockados).
+- [x] Definição Ética (Manifesto e Copyright em nome de Pablo Dias).
+
+### Fase 2: Inteligência e Visualização (Atual)
+- [x] Implementação de filtros por Categoria (Militar, Política, Econômica) no Frontend.
+- [ ] Sistema de "Alertas de Impacto" (Notificações visuais e feed para Impacto > 4).
+- [ ] Painel de Fontes (Módulo para transparência das notícias citadas).
+
+### Fase 3: Orquestração de Agentes (Implementação Real-time)
 - [ ] Implementação de Scrapers reais (Agente de Busca).
-- [ ] Configuração do Banco PostGIS e persistência de eventos.
 - [ ] Integração do CrewAI com APIs de busca (Serper.dev/Google).
+- [ ] Ingestão contínua no Banco de Dados.
 
-### Fase 2: Inteligência e Visualização (Próximo Passo)
-- [ ] Implementação de filtros por Categoria (Militar, Política, Econômica) no Frontend.
-- [ ] Sistema de "Alertas de Impacto" (Notificações para Impacto > 4).
-- [ ] Painel de Fontes (Transparência das notícias citadas).
-
-### Fase 3: Módulo Simbolus (O Guia)
-- [ ] Desenvolvimento da biblioteca de correlação semântica.
+### Fase 4: Módulo Simbolus e Impacto Social (O Guia)
 - [ ] Ingestão de textos históricos (Apocalipse e outros textos proféticos).
 - [ ] Interface de análise comparativa: "O Presente espelhando o Passado".
-
-### Fase 4: Resiliência e Impacto Social
 - [ ] Modo Offline/Baixa largura de banda para zonas de conflito.
-- [ ] Exportação de relatórios de preparação para civis.
-- [ ] Deploy em infraestrutura de alta disponibilidade.
 
 ---
 
