@@ -47,10 +47,10 @@ O sistema é baseado em uma **Arquitetura de Microserviços Orientada a Eventos 
 - [x] Seed Inicial de Banco de Dados Local (100 eventos realistas mockados).
 - [x] Definição Ética (Manifesto e Copyright em nome de Pablo Dias).
 
-### Fase 2: Inteligência e Visualização (Atual)
+### Fase 2: Inteligência e Visualização (Concluída)
 - [x] Implementação de filtros por Categoria (Militar, Política, Econômica) no Frontend.
-- [ ] Sistema de "Alertas de Impacto" (Notificações visuais e feed para Impacto > 4).
-- [ ] Painel de Fontes (Módulo para transparência das notícias citadas).
+- [x] Sistema de "Alertas de Impacto" (Notificações visuais e feed para Impacto > 4).
+- [x] Painel de Fontes (Módulo para transparência das notícias citadas).
 
 ### Fase 3: Orquestração de Agentes (Implementação Real-time)
 - [ ] Implementação de Scrapers reais (Agente de Busca).
