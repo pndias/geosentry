@@ -1,0 +1,9 @@
+
+> geosentry-frontend@1.0.0 dev
+> vite --port 3000 --host
+
+
+  VITE v4.5.14  ready in 107 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.0.102:3000/

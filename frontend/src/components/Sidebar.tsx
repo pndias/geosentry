@@ -4,6 +4,7 @@ import { Shield, Globe, TrendingUp, X, Filter, AlertTriangle, BookOpen, List } f
 import { Evento } from '../types';
 
 interface SidebarProps {
+  allEvents: Evento[];
   events: Evento[];
   onEventClick: (evento: Evento) => void;
   selectedCategory: string;
@@ -13,6 +14,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
+  allEvents,
   events, 
   onEventClick, 
   selectedCategory, 
@@ -23,19 +25,20 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const [activeTab, setActiveTab] = useState<'feed' | 'alertas' | 'fontes'>('feed');
 
-  const militarCount = useMemo(() => events.filter(e => e.categoria === 'Militar').length, [events]);
-  const highImpactEvents = useMemo(() => events.filter(e => e.impacto >= 4), [events]);
+  // Stats calculate from ALL events so they don't change when filtering
+  const militarCount = useMemo(() => allEvents.filter(e => e.categoria === 'Militar').length, [allEvents]);
+  const highImpactEvents = useMemo(() => allEvents.filter(e => e.impacto >= 4), [allEvents]);
   
   // Agrupamento e contagem de fontes citadas
   const sourcesCount = useMemo(() => {
     const counts: Record<string, number> = {};
-    events.forEach(e => {
+    allEvents.forEach(e => {
       e.fontes_citadas.forEach(f => {
         counts[f] = (counts[f] || 0) + 1;
       });
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  }, [events]);
+  }, [allEvents]);
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
@@ -48,12 +51,25 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <div 
+          className="stat-card" 
+          style={{ cursor: 'pointer' }}
+          onClick={() => { setSelectedCategory('Militar'); setActiveTab('feed'); }}
+        >
           <Shield size={16} />
           <span>Militares</span>
           <strong>{militarCount}</strong>
         </div>
-        <div className="stat-card" style={highImpactEvents.length > 0 ? { borderColor: '#ef4444', borderWidth: '1px', borderStyle: 'solid' } : {}}>
+        <div 
+          className="stat-card" 
+          style={{ 
+            cursor: 'pointer',
+            borderColor: highImpactEvents.length > 0 ? '#ef4444' : 'transparent', 
+            borderWidth: '1px', 
+            borderStyle: 'solid' 
+          }}
+          onClick={() => setActiveTab('alertas')}
+        >
           <AlertTriangle size={16} color={highImpactEvents.length > 0 ? '#ef4444' : 'currentColor'} />
           <span>Alertas Críticos</span>
           <strong style={highImpactEvents.length > 0 ? { color: '#ef4444' } : {}}>{highImpactEvents.length}</strong>

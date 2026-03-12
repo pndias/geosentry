@@ -10,7 +10,7 @@ import EventMap from './components/EventMap';
 import './index.css';
 
 const App: React.FC = () => {
-  const { filteredEvents, category, changeCategory, loading, error } = useEvents();
+  const { events, filteredEvents, category, changeCategory, loading, error } = useEvents();
   
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [mapCenter, setMapCenter] = useState<[number, number]>([20, 0]);
@@ -37,6 +37,7 @@ const App: React.FC = () => {
       </button>
 
       <Sidebar 
+        allEvents={events}
         events={filteredEvents} 
         onEventClick={handleEventClick}
         selectedCategory={category}
