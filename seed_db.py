@@ -49,7 +49,9 @@ def generate_100_events():
                 lon=round(lon_var, 4),
                 impacto=random.randint(2, 5),
                 tags=[cat.lower(), "sul-global"],
-                fontes_citadas=random.sample(fontes, k=2)
+                fontes_citadas=random.sample(fontes, k=2),
+                data=f"2026-03-{random.randint(1, 14):02d}",
+                link_fonte=f"https://example.com/noticia/{i}"
             )
         )
     return eventos
@@ -57,9 +59,10 @@ def generate_100_events():
 def seed_database():
     db: Session = SessionLocal()
     
-    # Limpa a tabela antes de popular
-    db.query(EventoDB).delete()
-    db.commit()
+    # Recria a tabela para garantir as novas colunas
+    print("Recriando tabelas...")
+    EventoDB.__table__.drop(bind=engine, checkfirst=True)
+    EventoDB.__table__.create(bind=engine)
     
     # Gera e insere
     print("Gerando 100 eventos geopolíticos focados no Sul Global...")

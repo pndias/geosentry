@@ -1,6 +1,6 @@
 // © 2026 Pablo Dias. Todos os direitos reservados.
 import React, { useMemo, useState } from 'react';
-import { Shield, Globe, TrendingUp, X, Filter, AlertTriangle, BookOpen, List } from 'lucide-react';
+import { Shield, Globe, X, Filter, AlertTriangle, BookOpen, List } from 'lucide-react';
 import { Evento } from '../types';
 
 interface SidebarProps {
@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [activeTab, setActiveTab] = useState<'feed' | 'alertas' | 'fontes'>('feed');
 
   // Stats calculate from ALL events so they don't change when filtering
-  const militarCount = useMemo(() => allEvents.filter(e => e.categoria === 'Militar').length, [allEvents]);
+  const militarCount = useMemo(() => allEvents.filter(e => e.categoria.toLowerCase().includes('militar')).length, [allEvents]);
   const highImpactEvents = useMemo(() => allEvents.filter(e => e.impacto >= 4), [allEvents]);
   
   // Agrupamento e contagem de fontes citadas
@@ -39,6 +39,15 @@ const Sidebar: React.FC<SidebarProps> = ({
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
   }, [allEvents]);
+
+  const getBadgeClass = (categoria: string) => {
+    const norm = categoria.toLowerCase();
+    if (norm.includes('militar')) return 'militar';
+    if (norm.includes('politica')) return 'politica';
+    if (norm.includes('economica')) return 'economica';
+    if (norm.includes('religiosa') || norm.includes('simbólica')) return 'religiosa-simbolica';
+    return '';
+  };
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
@@ -103,7 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {events.map((evento) => (
               <div key={evento.id} className="feed-item" onClick={() => onEventClick(evento)}>
                 <div className="item-meta">
-                  <span className={`badge ${evento.categoria.toLowerCase().replace('/', '-')}`}>{evento.categoria}</span>
+                  <span className={`badge ${getBadgeClass(evento.categoria)}`}>{evento.categoria}</span>
                   <span className="impact">Impacto: {evento.impacto}</span>
                 </div>
                 <h3>{evento.titulo}</h3>
@@ -119,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {highImpactEvents.map((evento) => (
               <div key={evento.id} className="feed-item" onClick={() => onEventClick(evento)} style={{ borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}>
                 <div className="item-meta">
-                  <span className={`badge ${evento.categoria.toLowerCase().replace('/', '-')}`}>{evento.categoria}</span>
+                  <span className={`badge ${getBadgeClass(evento.categoria)}`}>{evento.categoria}</span>
                   <span className="impact" style={{ color: '#ef4444', fontWeight: 'bold' }}>ALERTA {evento.impacto}/5</span>
                 </div>
                 <h3>{evento.titulo}</h3>

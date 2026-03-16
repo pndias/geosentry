@@ -23,3 +23,5 @@ class EventoGeopolitico(BaseModel):
     impacto: int = Field(..., ge=1, le=5, description="Impacto global de 1 a 5")
     tags: List[str] = Field(default_factory=list)
     fontes_citadas: List[str] = Field(default_factory=list)
+    data: Optional[str] = Field(None, description="Data do evento em formato ISO (YYYY-MM-DD)")
+    link_fonte: Optional[str] = Field(None, description="Link para a fonte original do evento")

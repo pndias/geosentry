@@ -27,7 +27,7 @@ export const useEvents = () => {
 
   const filteredEvents = useMemo(() => {
     if (category === 'all') return events;
-    return events.filter(e => e.categoria === category);
+    return events.filter(e => e.categoria.toLowerCase().includes(category.toLowerCase()));
   }, [events, category]);
 
   const changeCategory = useCallback((newCategory: string) => {

@@ -13,3 +13,5 @@ class EventoDB(Base):
     impacto = Column(Integer)
     tags = Column(JSON)
     fontes_citadas = Column(JSON)
+    data = Column(String)  # ISO Format: YYYY-MM-DD
+    link_fonte = Column(String, nullable=True)

@@ -25,7 +25,9 @@ class EventoService:
                     coordenadas=coordenadas,
                     impacto=e.impacto,
                     tags=e.tags or [],
-                    fontes_citadas=e.fontes_citadas or []
+                    fontes_citadas=e.fontes_citadas or [],
+                    data=e.data,
+                    link_fonte=e.link_fonte
                 )
             )
         return result

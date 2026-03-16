@@ -19,13 +19,12 @@ const MapController: React.FC<{ center: [number, number]; zoom: number }> = ({ c
 };
 
 const getCategoryColor = (categoria: string) => {
-  switch(categoria) {
-    case 'Militar': return '#ef4444'; // Red
-    case 'Politica': return '#3b82f6'; // Blue
-    case 'Economica': return '#22c55e'; // Green
-    case 'Religiosa/Simbólica': return '#a855f7'; // Purple
-    default: return '#3b82f6';
-  }
+  const normalized = categoria.toLowerCase();
+  if (normalized.includes('militar')) return '#ef4444';
+  if (normalized.includes('politica')) return '#3b82f6';
+  if (normalized.includes('economica')) return '#22c55e';
+  if (normalized.includes('religiosa') || normalized.includes('simbólica')) return '#a855f7';
+  return '#3b82f6';
 };
 
 const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom }) => {
