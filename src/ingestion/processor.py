@@ -1,6 +1,6 @@
 import asyncio
 from typing import Optional
-from src.core.models import EventoGeopolitico, CategoriaEvento, Coordenadas
+from src.domain.entities import EventoGeopolitico, CategoriaEvento, Coordenadas
 from pydantic import ValidationError
 
 async def extrair_dados_texto(texto: str) -> EventoGeopolitico:

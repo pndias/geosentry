@@ -1,5 +1,4 @@
-# © 2026 Pablo Dias. Todos os direitos reservados.
-
+# src/domain/entities.py
 from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel, Field

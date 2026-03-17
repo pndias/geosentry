@@ -39,15 +39,32 @@ pip install -r requirements.txt > /dev/null 2>&1
 
 # 2. Start Backend API in background
 echo "🔌 Starting FastAPI Server on port 8000..."
-PYTHONPATH=. uvicorn src.api.main:app --port 8000 > api.log 2>&1 &
+export PYTHONPATH=$PYTHONPATH:.
+./venv/bin/uvicorn src.api.main:app --host 0.0.0.0 --port 8000 > api.log 2>&1 &
 BACKEND_PID=$!
 
 # Wait for backend to be ready
-sleep 3
+sleep 5
 
 # 3. Seed Database
 echo "🌱 Seeding the database with fresh data..."
-PYTHONPATH=. python3 seed_db.py
+./venv/bin/python seed_db.py
+
+# 4. Start Frontend
+echo "💻 Starting Frontend Development Server..."
+cd frontend
+npm install > /dev/null 2>&1
+npm run dev > frontend.log 2>&1 &
+FRONTEND_PID=$!
+cd ..
+
+echo "✅ GeoSentry is perfectly up and running!"
+echo "   - API: http://localhost:8000/docs"
+echo "   - Frontend: http://localhost:5173"
+echo "   (Press Ctrl+C to stop all services)"
+
+# Wait for both processes
+wait $BACKEND_PID $FRONTEND_PID
 
 # 4. Setup and Start Frontend
 echo "💻 Setting up and starting Frontend..."

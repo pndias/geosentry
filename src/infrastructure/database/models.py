@@ -1,5 +1,6 @@
+# src/infrastructure/database/models.py
 from sqlalchemy import Column, Integer, String, Float, JSON
-from src.api.database import Base
+from src.infrastructure.database.session import Base
 
 class EventoDB(Base):
     __tablename__ = "eventos"

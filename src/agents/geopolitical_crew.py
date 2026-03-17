@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process
 from crewai_tools import SerperDevTool
-from src.core.models import EventoGeopolitico
+from src.domain.entities import EventoGeopolitico
 
 # Carrega chaves de API do arquivo .env
 load_dotenv()

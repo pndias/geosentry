@@ -1,7 +1,7 @@
 import random
 from sqlalchemy.orm import Session
-from src.api.database import SessionLocal, engine, Base
-from src.api.models_db import EventoDB
+from src.infrastructure.database.session import SessionLocal, engine, Base
+from src.infrastructure.database.models import EventoDB
 
 # Garante que as tabelas existem
 Base.metadata.create_all(bind=engine)
