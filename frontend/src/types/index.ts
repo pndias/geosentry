@@ -14,4 +14,5 @@ export interface Evento {
   impacto: number;
   fontes_citadas: string[];
   tags: string[];
+  link_fonte?: string;
 }

@@ -50,9 +50,24 @@ const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom }) => {
             <div className="modern-popup">
               <h3 style={{ color: getCategoryColor(evento.categoria) }}>{evento.titulo}</h3>
               <p>{evento.resumo_analitico}</p>
-              <div className="popup-footer">
-                <strong>Impacto {evento.impacto}/5</strong>
-                <span>{evento.fontes_citadas.join(', ')}</span>
+              <div className="popup-footer" style={{ flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Impacto {evento.impacto}/5</strong>
+                  <span>{evento.fontes_citadas.join(', ')}</span>
+                </div>
+                {evento.link_fonte && (
+                  <div style={{ marginTop: '4px' }}>
+                    <a 
+                      href={evento.link_fonte} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                      Ver Fonte Original
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </Popup>
