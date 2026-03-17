@@ -65,12 +65,3 @@ echo "   (Press Ctrl+C to stop all services)"
 
 # Wait for both processes
 wait $BACKEND_PID $FRONTEND_PID
-
-# 4. Setup and Start Frontend
-echo "💻 Setting up and starting Frontend..."
-cd frontend
-npm install > frontend_deploy.log 2>&1
-npm run dev
-
-# The script will block here while 'npm run dev' runs.
-# When the user stops it (Ctrl+C), the 'cleanup' trap will fire.
