@@ -20,48 +20,23 @@ O projeto foi desenhado utilizando princípios de microserviços e será totalme
 
 ## 🚀 Como Executar Localmente via CLI
 
-Para rodar o projeto na sua máquina sem o uso de agentes automatizados ou Docker, siga o passo a passo abaixo:
+Para rodar o projeto de forma simplificada na sua máquina, utilize o script automatizado que prepara o ambiente, inicia a API e o Dashboard, e limpa todo o estado e metadata ao ser fechado (evitando problemas de execuções passadas).
 
-### 1. Preparar o Backend (FastAPI & SQLite)
 Abra um terminal e navegue até a pasta do projeto:
 ```bash
 cd /caminho/para/geosentry
 ```
 
-Ative o ambiente virtual e instale as dependências:
+Dê permissão de execução ao script e inicie o ambiente:
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+chmod +x start.sh
+./start.sh
 ```
 
-Inicie o servidor Backend:
-```bash
-PYTHONPATH=. uvicorn src.api.main:app --reload --port 8000
-```
-A API estará rodando em `http://localhost:8000/eventos`.
+Isso fará o setup do banco de dados `geosentry.db`, iniciará a API (Backend) e abrirá o Frontend. 
+O Dashboard abrirá automaticamente (ou acesse `http://localhost:5173`).
 
-*(Opcional)* Se o banco de dados `geosentry.db` ainda não estiver populado, abra outro terminal com o `venv` ativo e rode:
-```bash
-PYTHONPATH=. python3 seed_db.py
-```
-
-### 2. Iniciar o Frontend (React + Vite)
-Abra uma **nova aba de terminal** e navegue para a pasta do frontend:
-```bash
-cd /caminho/para/geosentry/frontend
-```
-
-Instale as dependências Node (apenas na primeira vez):
-```bash
-npm install
-```
-
-Inicie o servidor de desenvolvimento:
-```bash
-npm run dev
-```
-O Dashboard abrirá automaticamente (ou acesse `http://localhost:5173` ou a porta indicada no terminal).
+**Ao encerrar o script** pressionando `Ctrl+C`, todos os arquivos temporários, de banco de dados e logs criados na sessão local serão deletados, garantindo que o projeto inicie fresco na próxima execução.
 
 ## 📂 Estrutura de Diretórios
 ```text
