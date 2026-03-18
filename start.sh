@@ -21,24 +21,32 @@ echo "🚀 Starting GeoSentry local environment (en)..."
 
 # 1. Backend
 echo "📦 Setting up Python backend..."
-python3 -m venv venv
+if [ ! -d "venv" ]; then
+    python3 -m venv venv
+fi
 source venv/bin/activate
-pip install -r requirements.txt > /dev/null 2>&1
+pip install -r requirements.txt --quiet || { echo "❌ pip install failed"; exit 1; }
 
 echo "🔌 Starting FastAPI server on port 8000..."
 export PYTHONPATH=$PYTHONPATH:.
-./venv/bin/uvicorn src.api.main:app --host 0.0.0.0 --port 8000 > api.log 2>&1 &
+./venv/bin/uvicorn src.api.main:app --host 127.0.0.1 --port 8000 > api.log 2>&1 &
 BACKEND_PID=$!
-sleep 5
+
+# Wait for API to be ready
+echo "⏳ Waiting for API..."
+for i in $(seq 1 15); do
+    curl -sf http://127.0.0.1:8000/events > /dev/null 2>&1 && break
+    sleep 1
+done
 
 # 2. Seed
 echo "🌱 Seeding the database..."
-./venv/bin/python seed_db.py
+./venv/bin/python3 seed_db.py
 
 # 3. Frontend
 echo "💻 Starting Frontend development server..."
 cd frontend
-npm install > /dev/null 2>&1
+npm install --silent > /dev/null 2>&1
 npm run dev > frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..

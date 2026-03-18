@@ -1,23 +1,30 @@
 # © 2026 Pablo Dias. All rights reserved.
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.routers import eventos
+
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+]
 
 def create_app() -> FastAPI:
     """FastAPI application factory for testability and modularity."""
     app = FastAPI(
         title="GeoSentry API",
-        version="1.1.0",
+        version="1.2.0",
         description="API for orchestration and querying of geopolitical events focused on the Global South."
     )
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=ALLOWED_ORIGINS,
+        allow_credentials=False,
+        allow_methods=["GET"],
+        allow_headers=["Content-Type"],
     )
 
     app.include_router(eventos.router)
@@ -28,4 +35,4 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("src.api.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("src.api.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Event } from '../types';
 
@@ -7,6 +7,7 @@ interface EventMapProps {
   events: Event[];
   mapCenter: [number, number];
   mapZoom: number;
+  onViewChange?: (lat: number, lon: number, radiusKm: number) => void;
 }
 
 const MapController: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
@@ -14,6 +15,27 @@ const MapController: React.FC<{ center: [number, number]; zoom: number }> = ({ c
   useEffect(() => {
     map.flyTo(center, zoom, { duration: 1.5 });
   }, [center, zoom, map]);
+  return null;
+};
+
+const ViewChangeEmitter: React.FC<{ onViewChange: (lat: number, lon: number, radiusKm: number) => void }> = ({ onViewChange }) => {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const emitBounds = (map: L.Map) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      const center = map.getCenter();
+      const bounds = map.getBounds();
+      const radiusKm = center.distanceTo(bounds.getNorthEast()) / 1000;
+      onViewChange(center.lat, center.lng, radiusKm);
+    }, 400);
+  };
+
+  useMapEvents({
+    moveend: (e) => emitBounds(e.target),
+    zoomend: (e) => emitBounds(e.target),
+  });
+
   return null;
 };
 
@@ -26,7 +48,7 @@ const getCategoryColor = (category: string) => {
   return '#3b82f6';
 };
 
-const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom }) => {
+const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom, onViewChange }) => {
   return (
     <MapContainer center={mapCenter} zoom={mapZoom} className="map-root" zoomControl={false}>
       <TileLayer 
@@ -34,6 +56,7 @@ const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom }) => {
         attribution='&copy; OpenStreetMap'
       />
       <MapController center={mapCenter} zoom={mapZoom} />
+      {onViewChange && <ViewChangeEmitter onViewChange={onViewChange} />}
       
       {events.map(event => event.coordinates && (
         <CircleMarker 

@@ -1,16 +1,9 @@
 # © 2026 Pablo Dias. All rights reserved.
 
-import os
-from dotenv import load_dotenv
-from crewai import Agent, Task, Crew, Process
-from crewai_tools import SerperDevTool
+from crewai import Agent, Task, Crew, Process, LLM
 from src.domain.entities import GeopoliticalEvent
 
-# Load API keys from .env file
-load_dotenv()
-
-# Real-Time Search Tool (Serper.dev)
-search_tool = SerperDevTool()
+llm = LLM(model="ollama/llama3.2:3b", base_url="http://localhost:11434")
 
 # --- Ethical and Plural Agent Configuration ---
 
@@ -23,7 +16,7 @@ researcher = Agent(
         "and treaties affect workers' lives, water security, food security, and civilian integrity. "
         "You are honest, technical, pluralistic, and deeply committed to peace through information."
     ),
-    tools=[search_tool],
+    llm=llm,
     verbose=True,
     allow_delegation=False
 )
@@ -37,6 +30,7 @@ analyst = Agent(
         "the impact level (1-5) must reflect the risk to human life and social stability. "
         "You seek the correlations that elites ignore but the working class needs to know."
     ),
+    llm=llm,
     verbose=True,
     allow_delegation=False
 )
@@ -74,10 +68,7 @@ def create_geopolitical_crew():
     )
 
 if __name__ == "__main__":
-    if not os.getenv("SERPER_API_KEY"):
-        print("ERROR: Configure your SERPER_API_KEY in .env to activate the Sentinel.")
-    else:
-        crew = create_geopolitical_crew()
-        result = crew.kickoff()
-        print("\n--- GEOSENTRY INTELLIGENCE (Voice of the Global South) ---")
-        print(result)
+    crew = create_geopolitical_crew()
+    result = crew.kickoff()
+    print("\n--- GEOSENTRY INTELLIGENCE (Voice of the Global South) ---")
+    print(result)

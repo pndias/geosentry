@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from typing import List
 from sqlalchemy.orm import Session
 from src.domain.entities import GeopoliticalEvent
@@ -22,3 +22,13 @@ def get_service(repo: IEventRepository = Depends(get_repository)) -> EventServic
 async def list_events(service: EventService = Depends(get_service)):
     """Retrieves the list of geopolitical events from the local database."""
     return service.list_events()
+
+@router.get("/nearby", response_model=List[GeopoliticalEvent])
+async def list_nearby_events(
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+    radius_km: float = Query(2000.0, gt=0, le=20100),
+    service: EventService = Depends(get_service),
+):
+    """Returns events near a location, sorted by proximity."""
+    return service.list_nearby(lat, lon, radius_km)

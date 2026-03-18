@@ -15,6 +15,11 @@ class IEventRepository(ABC):
         pass
 
     @abstractmethod
+    def list_nearby(self, lat: float, lon: float, radius_km: float = 2000.0) -> List[GeopoliticalEvent]:
+        """List events near a location, sorted by distance."""
+        pass
+
+    @abstractmethod
     def create(self, event: GeopoliticalEvent) -> GeopoliticalEvent:
         """Create a new event."""
         pass

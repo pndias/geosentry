@@ -11,5 +11,9 @@ class EventService:
         """Use case: List all geopolitical events."""
         return self.repository.list_all()
 
+    def list_nearby(self, lat: float, lon: float, radius_km: float = 2000.0) -> List[GeopoliticalEvent]:
+        """Use case: List events near a geographic location."""
+        return self.repository.list_nearby(lat, lon, radius_km)
+
     def get_event(self, event_id: int) -> Optional[GeopoliticalEvent]:
         return self.repository.get_by_id(event_id)

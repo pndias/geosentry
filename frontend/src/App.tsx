@@ -1,6 +1,6 @@
 // © 2026 Pablo Dias. All rights reserved.
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Menu } from 'lucide-react';
 import { useEvents } from './hooks/useEvents';
 import { Event } from './types';
@@ -10,11 +10,19 @@ import EventMap from './components/EventMap';
 import './index.css';
 
 const App: React.FC = () => {
-  const { events, filteredEvents, category, changeCategory, loading, error } = useEvents();
+  const { events, filteredEvents, category, changeCategory, loading, error, userLocation, fetchNearby } = useEvents();
   
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [mapCenter, setMapCenter] = useState<[number, number]>([20, 0]);
   const [mapZoom, setMapZoom] = useState<number>(2);
+
+  // Center map on user location once available
+  useEffect(() => {
+    if (userLocation) {
+      setMapCenter(userLocation);
+      setMapZoom(5);
+    }
+  }, [userLocation]);
 
   const handleEventClick = useCallback((event: Event) => {
     if (event.coordinates) {
@@ -55,7 +63,8 @@ const App: React.FC = () => {
           <EventMap 
             events={filteredEvents} 
             mapCenter={mapCenter} 
-            mapZoom={mapZoom} 
+            mapZoom={mapZoom}
+            onViewChange={fetchNearby}
           />
         </div>
       </main>
