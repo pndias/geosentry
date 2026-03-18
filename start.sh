@@ -58,10 +58,14 @@ npm run dev > frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..
 
+sleep 3
+
 echo "✅ GeoSentry is perfectly up and running!"
 echo "   - API: http://localhost:8000/docs"
-echo "   - Frontend: http://localhost:5173"
+echo "   - Frontend: http://localhost:3000"
 echo "   (Press Ctrl+C to stop all services)"
+
+open http://localhost:3000
 
 # Wait for both processes
 wait $BACKEND_PID $FRONTEND_PID
