@@ -1,62 +1,60 @@
 # src/infrastructure/database/repositories.py
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from src.domain.repositories import IEventoRepository
-from src.domain.entities import EventoGeopolitico, CategoriaEvento, Coordenadas
-from src.infrastructure.database.models import EventoDB
+from src.domain.repositories import IEventRepository
+from src.domain.entities import GeopoliticalEvent, EventCategory, Coordinates
+from src.infrastructure.database.models import EventDB
 
-class SQLAlchemyEventoRepository(IEventoRepository):
+class SQLAlchemyEventRepository(IEventRepository):
     def __init__(self, db: Session):
         self.db = db
     
-    def list_all(self) -> List[EventoGeopolitico]:
-        """Recupera os eventos do banco de dados local SQLite."""
-        db_eventos = self.db.query(EventoDB).all()
+    def list_all(self) -> List[GeopoliticalEvent]:
+        """Retrieves events from the local SQLite database."""
+        db_events = self.db.query(EventDB).all()
         result = []
-        for e in db_eventos:
-            coordenadas = None
+        for e in db_events:
+            coordinates = None
             if e.lat is not None and e.lon is not None:
-                coordenadas = Coordenadas(lat=e.lat, lon=e.lon)
+                coordinates = Coordinates(lat=e.lat, lon=e.lon)
                 
             result.append(
-                EventoGeopolitico(
+                GeopoliticalEvent(
                     id=e.id,
-                    titulo=e.titulo,
-                    categoria=CategoriaEvento(e.categoria),
-                    resumo_analitico=e.resumo_analitico,
-                    coordenadas=coordenadas,
-                    impacto=e.impacto,
+                    title=e.title,
+                    category=EventCategory(e.category),
+                    analytical_summary=e.analytical_summary,
+                    coordinates=coordinates,
+                    impact=e.impact,
                     tags=e.tags or [],
-                    fontes_citadas=e.fontes_citadas or [],
-                    data=e.data,
-                    link_fonte=e.link_fonte
+                    cited_sources=e.cited_sources or [],
+                    date=e.date,
+                    source_link=e.source_link
                 )
             )
         return result
     
-    def get_by_id(self, event_id: int) -> Optional[EventoGeopolitico]:
-        # Implementação básica, pode ser expandida
-        e = self.db.query(EventoDB).filter(EventoDB.id == event_id).first()
+    def get_by_id(self, event_id: int) -> Optional[GeopoliticalEvent]:
+        e = self.db.query(EventDB).filter(EventDB.id == event_id).first()
         if not e:
             return None
             
-        coordenadas = None
+        coordinates = None
         if e.lat is not None and e.lon is not None:
-            coordenadas = Coordenadas(lat=e.lat, lon=e.lon)
+            coordinates = Coordinates(lat=e.lat, lon=e.lon)
             
-        return EventoGeopolitico(
+        return GeopoliticalEvent(
             id=e.id,
-            titulo=e.titulo,
-            categoria=CategoriaEvento(e.categoria),
-            resumo_analitico=e.resumo_analitico,
-            coordenadas=coordenadas,
-            impacto=e.impacto,
+            title=e.title,
+            category=EventCategory(e.category),
+            analytical_summary=e.analytical_summary,
+            coordinates=coordinates,
+            impact=e.impact,
             tags=e.tags or [],
-            fontes_citadas=e.fontes_citadas or [],
-            data=e.data,
-            link_fonte=e.link_fonte
+            cited_sources=e.cited_sources or [],
+            date=e.date,
+            source_link=e.source_link
         )
 
-    def create(self, event: EventoGeopolitico) -> EventoGeopolitico:
-        # Implementação se necessário
+    def create(self, event: GeopoliticalEvent) -> GeopoliticalEvent:
         pass

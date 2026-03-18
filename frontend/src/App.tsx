@@ -1,9 +1,9 @@
-// © 2026 Pablo Dias. Todos os direitos reservados.
+// © 2026 Pablo Dias. All rights reserved.
 
 import React, { useState, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import { useEvents } from './hooks/useEvents';
-import { Evento } from './types';
+import { Event } from './types';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import EventMap from './components/EventMap';
@@ -16,12 +16,11 @@ const App: React.FC = () => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([20, 0]);
   const [mapZoom, setMapZoom] = useState<number>(2);
 
-  const handleEventClick = useCallback((evento: Evento) => {
-    if (evento.coordenadas) {
-      setMapCenter([evento.coordenadas.lat, evento.coordenadas.lon]);
+  const handleEventClick = useCallback((event: Event) => {
+    if (event.coordinates) {
+      setMapCenter([event.coordinates.lat, event.coordinates.lon]);
       setMapZoom(5);
       
-      // Auto-close sidebar on mobile after clicking
       if (window.innerWidth <= 768) {
         setSidebarOpen(false);
       }
@@ -51,7 +50,7 @@ const App: React.FC = () => {
 
         <div className="map-view">
           {error && <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded z-[1000]">{error}</div>}
-          {loading && <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg z-[1000]">Atualizando inteligência...</div>}
+          {loading && <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg z-[1000]">Updating intelligence...</div>}
           
           <EventMap 
             events={filteredEvents} 

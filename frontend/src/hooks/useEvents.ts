@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Evento } from '../types';
-import { eventoService } from '../services/api';
+import { Event } from '../types';
+import { eventService } from '../services/api';
 
 export const useEvents = () => {
-  const [events, setEvents] = useState<Evento[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [category, setCategory] = useState<string>('all');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,11 +12,11 @@ export const useEvents = () => {
     const loadEvents = async () => {
       try {
         setLoading(true);
-        const data = await eventoService.fetchEventos();
+        const data = await eventService.fetchEvents();
         setEvents(data);
         setError(null);
       } catch (err: any) {
-        setError(err.message || 'Erro ao buscar eventos');
+        setError(err.message || 'Error fetching events');
       } finally {
         setLoading(false);
       }
@@ -27,7 +27,7 @@ export const useEvents = () => {
 
   const filteredEvents = useMemo(() => {
     if (category === 'all') return events;
-    return events.filter(e => e.categoria.toLowerCase().includes(category.toLowerCase()));
+    return events.filter(e => e.category.toLowerCase().includes(category.toLowerCase()));
   }, [events, category]);
 
   const changeCategory = useCallback((newCategory: string) => {

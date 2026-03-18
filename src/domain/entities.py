@@ -3,24 +3,24 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-class CategoriaEvento(str, Enum):
-    MILITAR = "Militar"
-    POLITICA = "Politica"
-    ECONOMICA = "Economica"
-    RELIGIOSA_SIMBOLICA = "Religiosa/Simbólica"
+class EventCategory(str, Enum):
+    MILITARY = "Military"
+    POLITICAL = "Political"
+    ECONOMIC = "Economic"
+    RELIGIOUS_SYMBOLIC = "Religious/Symbolic"
 
-class Coordenadas(BaseModel):
-    lat: float = Field(..., description="Latitude decimal do local do evento")
-    lon: float = Field(..., description="Longitude decimal do local do evento")
+class Coordinates(BaseModel):
+    lat: float = Field(..., description="Decimal latitude of the event location")
+    lon: float = Field(..., description="Decimal longitude of the event location")
 
-class EventoGeopolitico(BaseModel):
-    id: Optional[int] = Field(None, description="ID único opcional")
-    titulo: str = Field(..., description="Título conciso do evento")
-    categoria: CategoriaEvento = Field(..., description="Classificação temática")
-    resumo_analitico: str = Field(..., description="Análise resumida das implicações")
-    coordenadas: Optional[Coordenadas] = Field(None, description="Localização geográfica")
-    impacto: int = Field(..., ge=1, le=5, description="Impacto global de 1 a 5")
+class GeopoliticalEvent(BaseModel):
+    id: Optional[int] = Field(None, description="Optional unique ID")
+    title: str = Field(..., description="Concise event title")
+    category: EventCategory = Field(..., description="Thematic classification")
+    analytical_summary: str = Field(..., description="Summarized analysis of implications")
+    coordinates: Optional[Coordinates] = Field(None, description="Geographic location")
+    impact: int = Field(..., ge=1, le=5, description="Global impact from 1 to 5")
     tags: List[str] = Field(default_factory=list)
-    fontes_citadas: List[str] = Field(default_factory=list)
-    data: Optional[str] = Field(None, description="Data do evento em formato ISO (YYYY-MM-DD)")
-    link_fonte: Optional[str] = Field(None, description="Link para a fonte original do evento")
+    cited_sources: List[str] = Field(default_factory=list)
+    date: Optional[str] = Field(None, description="Event date in ISO format (YYYY-MM-DD)")
+    source_link: Optional[str] = Field(None, description="Link to the original event source")

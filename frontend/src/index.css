@@ -83,10 +83,10 @@ body, html, #root {
   padding: 2px 8px; border-radius: 4px; font-size: 0.65rem;
   font-weight: 700; text-transform: uppercase;
 }
-.militar { background: #fee2e2; color: #ef4444; }
-.politica { background: #dbeafe; color: #3b82f6; }
-.economica { background: #dcfce7; color: #22c55e; }
-.religiosa-simbolica { background: #f3e8ff; color: #a855f7; }
+.military { background: #fee2e2; color: #ef4444; }
+.political { background: #dbeafe; color: #3b82f6; }
+.economic { background: #dcfce7; color: #22c55e; }
+.religious-symbolic { background: #f3e8ff; color: #a855f7; }
 
 /* Main Content */
 .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }

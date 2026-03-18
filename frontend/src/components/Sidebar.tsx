@@ -1,12 +1,12 @@
-// © 2026 Pablo Dias. Todos os direitos reservados.
+// © 2026 Pablo Dias. All rights reserved.
 import React, { useMemo, useState } from 'react';
 import { Shield, Globe, X, Filter, AlertTriangle, BookOpen, List } from 'lucide-react';
-import { Evento } from '../types';
+import { Event } from '../types';
 
 interface SidebarProps {
-  allEvents: Evento[];
-  events: Evento[];
-  onEventClick: (evento: Evento) => void;
+  allEvents: Event[];
+  events: Event[];
+  onEventClick: (event: Event) => void;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
   isOpen: boolean;
@@ -23,29 +23,27 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleSidebar 
 }) => {
 
-  const [activeTab, setActiveTab] = useState<'feed' | 'alertas' | 'fontes'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'alerts' | 'sources'>('feed');
 
-  // Stats calculate from ALL events so they don't change when filtering
-  const militarCount = useMemo(() => allEvents.filter(e => e.categoria.toLowerCase().includes('militar')).length, [allEvents]);
-  const highImpactEvents = useMemo(() => allEvents.filter(e => e.impacto >= 4), [allEvents]);
+  const militaryCount = useMemo(() => allEvents.filter(e => e.category.toLowerCase().includes('military')).length, [allEvents]);
+  const highImpactEvents = useMemo(() => allEvents.filter(e => e.impact >= 4), [allEvents]);
   
-  // Agrupamento e contagem de fontes citadas
   const sourcesCount = useMemo(() => {
     const counts: Record<string, number> = {};
     allEvents.forEach(e => {
-      e.fontes_citadas.forEach(f => {
+      e.cited_sources.forEach(f => {
         counts[f] = (counts[f] || 0) + 1;
       });
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
   }, [allEvents]);
 
-  const getBadgeClass = (categoria: string) => {
-    const norm = categoria.toLowerCase();
-    if (norm.includes('militar')) return 'militar';
-    if (norm.includes('politica')) return 'politica';
-    if (norm.includes('economica')) return 'economica';
-    if (norm.includes('religiosa') || norm.includes('simbólica')) return 'religiosa-simbolica';
+  const getBadgeClass = (category: string) => {
+    const norm = category.toLowerCase();
+    if (norm.includes('military')) return 'military';
+    if (norm.includes('political')) return 'political';
+    if (norm.includes('economic')) return 'economic';
+    if (norm.includes('religious') || norm.includes('symbolic')) return 'religious-symbolic';
     return '';
   };
 
@@ -63,11 +61,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div 
           className="stat-card" 
           style={{ cursor: 'pointer' }}
-          onClick={() => { setSelectedCategory('Militar'); setActiveTab('feed'); }}
+          onClick={() => { setSelectedCategory('Military'); setActiveTab('feed'); }}
         >
           <Shield size={16} />
-          <span>Militares</span>
-          <strong>{militarCount}</strong>
+          <span>Military</span>
+          <strong>{militaryCount}</strong>
         </div>
         <div 
           className="stat-card" 
@@ -77,78 +75,78 @@ const Sidebar: React.FC<SidebarProps> = ({
             borderWidth: '1px', 
             borderStyle: 'solid' 
           }}
-          onClick={() => setActiveTab('alertas')}
+          onClick={() => setActiveTab('alerts')}
         >
           <AlertTriangle size={16} color={highImpactEvents.length > 0 ? '#ef4444' : 'currentColor'} />
-          <span>Alertas Críticos</span>
+          <span>Critical Alerts</span>
           <strong style={highImpactEvents.length > 0 ? { color: '#ef4444' } : {}}>{highImpactEvents.length}</strong>
         </div>
       </div>
 
       <div className="filter-section">
-        <label><Filter size={14} /> Filtro Global</label>
+        <label><Filter size={14} /> Global Filter</label>
         <select 
           value={selectedCategory} 
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="modern-select"
         >
-          <option value="all">Todas as Categorias</option>
-          <option value="Militar">Militar</option>
-          <option value="Politica">Política</option>
-          <option value="Economica">Econômica</option>
-          <option value="Religiosa/Simbólica">Religiosa/Simbólica</option>
+          <option value="all">All Categories</option>
+          <option value="Military">Military</option>
+          <option value="Political">Political</option>
+          <option value="Economic">Economic</option>
+          <option value="Religious/Symbolic">Religious/Symbolic</option>
         </select>
       </div>
 
       <div className="sidebar-tabs">
         <button className={`tab-btn ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}><List size={14}/> Feed</button>
-        <button className={`tab-btn ${activeTab === 'alertas' ? 'active' : ''}`} onClick={() => setActiveTab('alertas')}><AlertTriangle size={14}/> Alertas</button>
-        <button className={`tab-btn ${activeTab === 'fontes' ? 'active' : ''}`} onClick={() => setActiveTab('fontes')}><BookOpen size={14}/> Fontes</button>
+        <button className={`tab-btn ${activeTab === 'alerts' ? 'active' : ''}`} onClick={() => setActiveTab('alerts')}><AlertTriangle size={14}/> Alerts</button>
+        <button className={`tab-btn ${activeTab === 'sources' ? 'active' : ''}`} onClick={() => setActiveTab('sources')}><BookOpen size={14}/> Sources</button>
       </div>
 
       <div className="event-feed">
         {activeTab === 'feed' && (
           <>
-            {events.map((evento) => (
-              <div key={evento.id} className="feed-item" onClick={() => onEventClick(evento)}>
+            {events.map((event) => (
+              <div key={event.id} className="feed-item" onClick={() => onEventClick(event)}>
                 <div className="item-meta">
-                  <span className={`badge ${getBadgeClass(evento.categoria)}`}>{evento.categoria}</span>
-                  <span className="impact">Impacto: {evento.impacto}</span>
+                  <span className={`badge ${getBadgeClass(event.category)}`}>{event.category}</span>
+                  <span className="impact">Impact: {event.impact}</span>
                 </div>
-                <h3>{evento.titulo}</h3>
-                <p>{evento.resumo_analitico.substring(0, 80)}...</p>
+                <h3>{event.title}</h3>
+                <p>{event.analytical_summary.substring(0, 80)}...</p>
               </div>
             ))}
-            {events.length === 0 && <div className="text-center p-4 text-gray-500">Nenhum evento encontrado.</div>}
+            {events.length === 0 && <div className="text-center p-4 text-gray-500">No events found.</div>}
           </>
         )}
 
-        {activeTab === 'alertas' && (
+        {activeTab === 'alerts' && (
           <>
-            {highImpactEvents.map((evento) => (
-              <div key={evento.id} className="feed-item" onClick={() => onEventClick(evento)} style={{ borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}>
+            {highImpactEvents.map((event) => (
+              <div key={event.id} className="feed-item" onClick={() => onEventClick(event)} style={{ borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}>
                 <div className="item-meta">
-                  <span className={`badge ${getBadgeClass(evento.categoria)}`}>{evento.categoria}</span>
-                  <span className="impact" style={{ color: '#ef4444', fontWeight: 'bold' }}>ALERTA {evento.impacto}/5</span>
+                  <span className={`badge ${getBadgeClass(event.category)}`}>{event.category}</span>
+                  <span className="impact" style={{ color: '#ef4444', fontWeight: 'bold' }}>ALERT {event.impact}/5</span>
                 </div>
-                <h3>{evento.titulo}</h3>
-                <p>{evento.resumo_analitico}</p>
+                <h3>{event.title}</h3>
+                <p>{event.analytical_summary}</p>
               </div>
             ))}
-            {highImpactEvents.length === 0 && <div className="text-center p-4 text-gray-500">Nenhum alerta crítico ativo.</div>}
+            {highImpactEvents.length === 0 && <div className="text-center p-4 text-gray-500">No active critical alerts.</div>}
           </>
         )}
 
-        {activeTab === 'fontes' && (
+        {activeTab === 'sources' && (
           <div className="sources-panel p-2">
-            <p className="text-sm text-gray-400 mb-4 text-center">Transparência de Inteligência</p>
-            {sourcesCount.map(([fonte, count]) => (
-              <div key={fonte} className="source-item">
-                <span>{fonte}</span>
-                <span className="source-count">{count} {count === 1 ? 'citação' : 'citações'}</span>
+            <p className="text-sm text-gray-400 mb-4 text-center">Intelligence Transparency</p>
+            {sourcesCount.map(([source, count]) => (
+              <div key={source} className="source-item">
+                <span>{source}</span>
+                <span className="source-count">{count} {count === 1 ? 'citation' : 'citations'}</span>
               </div>
             ))}
-            {sourcesCount.length === 0 && <div className="text-center p-4 text-gray-500">Nenhuma fonte citada.</div>}
+            {sourcesCount.length === 0 && <div className="text-center p-4 text-gray-500">No sources cited.</div>}
           </div>
         )}
       </div>

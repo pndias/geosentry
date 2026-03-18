@@ -1,68 +1,68 @@
-# 🗺️ GeoSentry: Estratégia de Desenvolvimento e Roadmap
+# 🗺️ GeoSentry: Development Strategy and Roadmap
 
-Este documento define a arquitetura técnica e o cronograma de implementação da plataforma GeoSentry, focada em monitoramento geopolítico autônomo e análise de impacto global.
+This document defines the technical architecture and implementation timeline for the GeoSentry platform, focused on autonomous geopolitical monitoring and global impact analysis.
 
-## 🏗️ 1. Arquitetura Técnica (High-Level Design)
+## 🏗️ 1. Technical Architecture (High-Level Design)
 
-O sistema é baseado em uma **Arquitetura de Microserviços Orientada a Eventos (EDA)**, totalmente conteinerizada:
+The system is based on an **Event-Driven Microservices Architecture (EDA)**, fully containerized:
 
-1.  **Sentry-Agents (Engineers de IA):**
-    -   Orquestrados via `CrewAI` e `LangChain`.
-    -   **Agente de Busca (OSINT):** Varredura de RSS, APIs de notícias e documentos oficiais.
-    -   **Agente de Extração (Analista):** Processamento via LLM (GPT-4o/Claude 3.5) para transformar texto bruto no schema `EventoGeopolitico`.
+1.  **Sentry-Agents (AI Engineers):**
+    -   Orchestrated via `CrewAI` and `LangChain`.
+    -   **Search Agent (OSINT):** Scanning RSS feeds, news APIs, and official documents.
+    -   **Extraction Agent (Analyst):** Processing via LLM (GPT-4o/Claude 3.5) to transform raw text into the `GeopoliticalEvent` schema.
 
 2.  **Geo-Core (Backend API):**
-    -   `FastAPI` (Python) para alta performance assíncrona.
-    -   Validação de dados via `Pydantic V2`.
+    -   `FastAPI` (Python) for high-performance async operations.
+    -   Data validation via `Pydantic V2`.
 
-3.  **Sentry-Storage (Camada de Dados):**
-    -   `PostgreSQL` com extensão `PostGIS` (Produção) / `SQLite` via SQLAlchemy (Local Dev).
+3.  **Sentry-Storage (Data Layer):**
+    -   `PostgreSQL` with `PostGIS` extension (Production) / `SQLite` via SQLAlchemy (Local Dev).
 
 4.  **Sentinel-UI (Frontend):**
-    -   Dashboard SPA (Single Page Application) em `React` + `TypeScript`.
-    -   `Leaflet.js` para visualização cartográfica interativa.
+    -   SPA (Single Page Application) Dashboard in `React` + `TypeScript`.
+    -   `Leaflet.js` for interactive cartographic visualization.
 
-5.  **Simbolus-Module (Módulo Analítico Futuro):**
-    -   Serviço isolado de PLN para análise de semiótica comparada entre eventos atuais e textos escatológicos históricos.
+5.  **Simbolus-Module (Future Analytical Module):**
+    -   Isolated NLP service for comparative semiotic analysis between current events and historical eschatological texts.
 
 ---
 
-## 🛠️ 2. Stack de Tecnologias Ideal
+## 🛠️ 2. Ideal Technology Stack
 
-| Camada | Tecnologia | Justificativa |
+| Layer | Technology | Rationale |
 | :--- | :--- | :--- |
-| **Linguagem** | Python 3.11+ | Ecossistema líder em IA e manipulação de dados. |
-| **Framework Web** | FastAPI | Nativo assíncrono, alta performance. |
-| **Banco de Dados** | SQLite / PostGIS | Flexibilidade local e escalabilidade geoespacial. |
-| **Frontend** | React + Vite | Interface de Command Center responsiva e componentizada. |
+| **Language** | Python 3.11+ | Leading ecosystem for AI and data manipulation. |
+| **Web Framework** | FastAPI | Native async, high performance. |
+| **Database** | SQLite / PostGIS | Local flexibility and geospatial scalability. |
+| **Frontend** | React + Vite | Responsive and componentized Command Center interface. |
 
 ---
 
-## 📈 3. Roadmap de Desenvolvimento
+## 📈 3. Development Roadmap
 
-### Fase 1: Fundação Técnica (Concluída)
-- [x] Definição de Schemas Pydantic e Models SQLAlchemy.
-- [x] Estrutura Modular de Pastas (Clean Architecture).
-- [x] Criação da API FastAPI.
-- [x] Seed Inicial de Banco de Dados Local (100 eventos realistas mockados).
-- [x] Definição Ética (Manifesto e Copyright em nome de Pablo Dias).
+### Phase 1: Technical Foundation (Completed)
+- [x] Pydantic Schemas and SQLAlchemy Models definition.
+- [x] Modular Folder Structure (Clean Architecture).
+- [x] FastAPI API creation.
+- [x] Initial Local Database Seed (100 realistic mocked events).
+- [x] Ethical Definition (Manifesto and Copyright under Pablo Dias).
 
-### Fase 2: Inteligência e Visualização (Concluída)
-- [x] Implementação de filtros por Categoria (Militar, Política, Econômica) no Frontend.
-- [x] Sistema de "Alertas de Impacto" (Notificações visuais e feed para Impacto > 4).
-- [x] Painel de Fontes (Módulo para transparência das notícias citadas).
+### Phase 2: Intelligence and Visualization (Completed)
+- [x] Category filters implementation (Military, Political, Economic) on the Frontend.
+- [x] "Impact Alerts" system (Visual notifications and feed for Impact > 4).
+- [x] Sources Panel (Module for news citation transparency).
 
-### Fase 3: Orquestração de Agentes (Implementação Real-time)
-- [ ] Implementação de Scrapers reais (Agente de Busca).
-- [ ] Integração do CrewAI com APIs de busca (Serper.dev/Google).
-- [ ] Ingestão contínua no Banco de Dados.
+### Phase 3: Agent Orchestration (Real-time Implementation)
+- [ ] Real scraper implementation (Search Agent).
+- [ ] CrewAI integration with search APIs (Serper.dev/Google).
+- [ ] Continuous database ingestion.
 
-### Fase 4: Módulo Simbolus e Impacto Social (O Guia)
-- [ ] Ingestão de textos históricos (Apocalipse e outros textos proféticos).
-- [ ] Interface de análise comparativa: "O Presente espelhando o Passado".
-- [ ] Modo Offline/Baixa largura de banda para zonas de conflito.
+### Phase 4: Simbolus Module and Social Impact (The Guide)
+- [ ] Historical text ingestion (Revelation and other prophetic texts).
+- [ ] Comparative analysis interface: "The Present mirroring the Past".
+- [ ] Offline/Low-bandwidth mode for conflict zones.
 
 ---
 
-## 📜 4. Filosofia do Projeto
-GeoSentry não é apenas um agregador de notícias; é um instrumento de **vigilância ética**. O sucesso do projeto será medido pela sua capacidade de fornecer informações que ajudem na tomada de decisões que preservem a paz e a justiça global.
+## 📜 4. Project Philosophy
+GeoSentry is not just a news aggregator; it is an instrument of **ethical vigilance**. The project's success will be measured by its ability to provide information that helps in decision-making that preserves global peace and justice.

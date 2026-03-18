@@ -1,19 +1,18 @@
-import { Evento } from '../types';
+import { Event } from '../types';
 
 const API_BASE_URL = '/api';
 
-export const eventoService = {
-  fetchEventos: async (): Promise<Evento[]> => {
+export const eventService = {
+  fetchEvents: async (): Promise<Event[]> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/eventos`);
+      const response = await fetch(`${API_BASE_URL}/events`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
       console.warn("Proxy fetch failed, falling back to localhost:8000", error);
-      // Fallback para desenvolvimento local caso o proxy falhe
-      const fallbackResponse = await fetch('http://localhost:8000/eventos');
+      const fallbackResponse = await fetch('http://localhost:8000/events');
       if (!fallbackResponse.ok) {
         throw new Error(`Fallback HTTP error! status: ${fallbackResponse.status}`);
       }

@@ -6,10 +6,10 @@ const Header: React.FC = () => {
     <header className="main-header">
       <div className="header-info">
         <Activity size={20} className="pulse" />
-        <span>Monitoramento Global em Tempo Real</span>
+        <span>Real-Time Global Monitoring</span>
       </div>
       <div className="user-profile">
-        <span>Sentinela do Sul Global</span>
+        <span>Global South Sentinel</span>
         <div className="avatar">GS</div>
       </div>
     </header>
