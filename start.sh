@@ -1,71 +1,53 @@
 #!/bin/bash
 
-# Define a cleanup function
+# ============================================
+# GeoSentry - Versão Português (pt-br)
+# ============================================
+
 cleanup() {
-    echo -e "\n🧹 Closing project and cleaning up metadata from local session..."
-    
-    # Kill all child background processes (like uvicorn)
+    echo -e "\n🧹 Encerrando projeto e limpando metadados da sessão local..."
     kill $(jobs -p) 2>/dev/null
-    
-    # Wait a bit to ensure processes release files
     sleep 1
-
-    # Remove the temporary local database to ensure a fresh start next time
-    rm -f geosentry.db
-    
-    # Remove log files
-    rm -f api.log
-    rm -f frontend/frontend.log
-    rm -f frontend/frontend_deploy.log
-
-    # Remove Python cache directories and files
+    rm -f geosentry.db api.log frontend/frontend.log frontend/frontend_deploy.log
     find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
     find . -type f -name "*.pyc" -delete 2>/dev/null
-    
-    echo "✨ Cleanup complete. You can reopen the project anytime without problems."
+    echo "✨ Limpeza completa. Você pode reabrir o projeto a qualquer momento."
     exit 0
 }
 
-# Trap terminal interrupt signals (Ctrl+C, etc) to ensure cleanup runs
 trap cleanup EXIT INT TERM
 
-echo "🚀 Starting GeoSentry local environment..."
+echo "🚀 Iniciando ambiente local do GeoSentry (pt-br)..."
 
-# 1. Setup Backend Environment
-echo "📦 Setting up Python backend..."
+# 1. Backend
+echo "📦 Configurando backend Python..."
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt > /dev/null 2>&1
 
-# 2. Start Backend API in background
-echo "🔌 Starting FastAPI Server on port 8000..."
+echo "🔌 Iniciando servidor FastAPI na porta 8000..."
 export PYTHONPATH=$PYTHONPATH:.
 ./venv/bin/uvicorn src.api.main:app --host 0.0.0.0 --port 8000 > api.log 2>&1 &
 BACKEND_PID=$!
-
-# Wait for backend to be ready
 sleep 5
 
-# 3. Seed Database
-echo "🌱 Seeding the database with fresh data..."
+# 2. Seed
+echo "🌱 Populando banco de dados..."
 ./venv/bin/python seed_db.py
 
-# 4. Start Frontend
-echo "💻 Starting Frontend Development Server..."
+# 3. Frontend
+echo "💻 Iniciando servidor de desenvolvimento do Frontend..."
 cd frontend
 npm install > /dev/null 2>&1
 npm run dev > frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..
-
 sleep 3
 
-echo "✅ GeoSentry is perfectly up and running!"
+echo "✅ GeoSentry está rodando!"
 echo "   - API: http://localhost:8000/docs"
 echo "   - Frontend: http://localhost:3000"
-echo "   (Press Ctrl+C to stop all services)"
+echo "   (Pressione Ctrl+C para parar)"
 
 open http://localhost:3000
-
-# Wait for both processes
 wait $BACKEND_PID $FRONTEND_PID
