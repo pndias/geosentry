@@ -72,7 +72,14 @@ def create_geopolitical_crew():
     )
 
 if __name__ == "__main__":
-    crew = create_geopolitical_crew()
-    result = crew.kickoff()
-    print("\n--- GEOSENTRY INTELLIGENCE (Voice of the Global South) ---")
-    print(result)
+    import time
+
+    CYCLE_HOURS = int(os.getenv("COLLECTION_INTERVAL_HOURS", "6"))
+
+    while True:
+        crew = create_geopolitical_crew()
+        result = crew.kickoff()
+        print("\n--- GEOSENTRY INTELLIGENCE (Voice of the Global South) ---")
+        print(result)
+        print(f"\n⏳ Next collection in {CYCLE_HOURS}h...")
+        time.sleep(CYCLE_HOURS * 3600)
