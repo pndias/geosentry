@@ -1,35 +1,33 @@
 import asyncio
-from typing import Optional
-from src.domain.entities import EventoGeopolitico, CategoriaEvento, Coordenadas
+from src.domain.entities import GeopoliticalEvent, EventCategory
 from pydantic import ValidationError
 
-async def extrair_dados_texto(texto: str) -> EventoGeopolitico:
+async def extract_data_from_text(text: str) -> GeopoliticalEvent:
     """
-    Simula a extração estruturada de dados usando LLM.
-    Futuramente integrará com LangChain ou chamadas diretas a LLMs.
+    Simulates structured data extraction using LLM.
+    Will integrate with LangChain or direct LLM calls in the future.
     """
     await asyncio.sleep(1)
     
-    # Mock data
     mock_data = {
-        "titulo": "Escalada de Tensões no Estreito de Ormuz",
-        "categoria": CategoriaEvento.MILITAR,
-        "resumo_analitico": "Movimentação naval atípica e exercícios de prontidão.",
-        "coordenadas": {"lat": 26.56, "lon": 56.25},
-        "impacto": 4,
-        "tags": ["marítimo", "Irã"],
-        "fontes_citadas": ["Reuters"]
+        "title": "Escalation of Tensions in the Strait of Hormuz",
+        "category": EventCategory.MILITARY,
+        "analytical_summary": "Atypical naval movement and readiness exercises.",
+        "coordinates": {"lat": 26.56, "lon": 56.25},
+        "impact": 4,
+        "tags": ["maritime", "Iran"],
+        "cited_sources": ["Reuters"]
     }
     
     try:
-        return EventoGeopolitico(**mock_data)
+        return GeopoliticalEvent(**mock_data)
     except ValidationError as e:
-        print(f"Erro na validação do schema: {e}")
+        print(f"Schema validation error: {e}")
         raise
 
 if __name__ == "__main__":
     async def main():
-        resultado = await extrair_dados_texto("Exemplo de notícia geopolítica...")
-        print(resultado.model_dump_json(indent=2))
+        result = await extract_data_from_text("Example geopolitical news...")
+        print(result.model_dump_json(indent=2))
 
     asyncio.run(main())

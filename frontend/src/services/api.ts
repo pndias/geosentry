@@ -1,23 +1,22 @@
-import { Evento } from '../types';
+import { Event } from '../types';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const FALLBACK_URL = 'http://localhost:8000';
 
-export const eventoService = {
-  fetchEventos: async (): Promise<Evento[]> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/eventos`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.warn("Proxy fetch failed, falling back to localhost:8000", error);
-      // Fallback para desenvolvimento local caso o proxy falhe
-      const fallbackResponse = await fetch('http://localhost:8000/eventos');
-      if (!fallbackResponse.ok) {
-        throw new Error(`Fallback HTTP error! status: ${fallbackResponse.status}`);
-      }
-      return await fallbackResponse.json();
-    }
+async function apiFetch(path: string): Promise<Event[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}${path}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    const res = await fetch(`${FALLBACK_URL}${path}`);
+    if (!res.ok) throw new Error(`Fallback HTTP ${res.status}`);
+    return await res.json();
   }
+}
+
+export const eventService = {
+  fetchEvents: () => apiFetch('/events'),
+  fetchNearby: (lat: number, lon: number, radiusKm = 2000) =>
+    apiFetch(`/events/nearby?lat=${lat}&lon=${lon}&radius_km=${radiusKm}`),
 };

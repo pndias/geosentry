@@ -1,18 +1,18 @@
-export type Categoria = 'Militar' | 'Politica' | 'Economica' | 'Religiosa/Simbólica';
+export type Category = 'Military' | 'Political' | 'Economic' | 'Religious/Symbolic';
 
-export interface Coordenadas {
+export interface Coordinates {
   lat: number;
   lon: number;
 }
 
-export interface Evento {
+export interface Event {
   id: number;
-  titulo: string;
-  categoria: Categoria;
-  resumo_analitico: string;
-  coordenadas?: Coordenadas;
-  impacto: number;
-  fontes_citadas: string[];
+  title: string;
+  category: Category;
+  analytical_summary: string;
+  coordinates?: Coordinates;
+  impact: number;
+  cited_sources: string[];
   tags: string[];
-  link_fonte?: string;
+  source_link?: string;
 }

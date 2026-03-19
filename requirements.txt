@@ -2,7 +2,5 @@ fastapi
 uvicorn
 pydantic
 sqlalchemy
-crewai
-crewai-tools
 python-dotenv
-asyncio
+psycopg2-binary

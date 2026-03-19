@@ -10,6 +10,5 @@ COPY src/ src/
 COPY seed_db.py .
 
 ENV PYTHONPATH=/app
-EXPOSE 8000
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "seed_db.py"]
