@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgis/postgis:15-3.3
+    image: imresamu/postgis:15-3.3-alpine
     container_name: geosentry_db
     environment:
       POSTGRES_USER: postgres
@@ -12,6 +12,51 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    shm_size: '128mb'
+    command:
+      - "postgres"
+      - "-c" 
+      - "shared_buffers=128MB"
+      - "-c"
+      - "work_mem=4MB"
+      - "-c"
+      - "maintenance_work_mem=64MB"
+      - "-c"
+      - "effective_cache_size=256MB"
+      - "-c"
+      - "dynamic_shared_memory_type=posix"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  ollama:
+    platform: linux/arm64
+    image: ollama/ollama:latest
+    container_name: geosentry_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  seed:
+    build:
+      context: .
+      dockerfile: docker/seed.Dockerfile
+    container_name: geosentry_seed
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
+      PYTHONPATH: /app
+    restart: "no"
 
   api:
     build:
@@ -19,12 +64,20 @@ services:
       dockerfile: docker/api.Dockerfile
     container_name: geosentry_api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/events || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: on-failure
 
   agents:
@@ -33,11 +86,14 @@ services:
       dockerfile: docker/agents.Dockerfile
     container_name: geosentry_agents
     depends_on:
-      - db
-      - ollama
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: ollama/llama3.2:3b
+      COLLECTION_INTERVAL_HOURS: "6"
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
     restart: on-failure
@@ -48,22 +104,12 @@ services:
       dockerfile: docker/ingestion.Dockerfile
     container_name: geosentry_ingestion
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
     restart: on-failure
-
-  seed:
-    build:
-      context: .
-      dockerfile: docker/seed.Dockerfile
-    container_name: geosentry_seed
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
-      PYTHONPATH: /app
 
   frontend:
     build:
@@ -73,15 +119,9 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - api
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: geosentry_ollama
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
+      api:
+        condition: service_healthy
+    restart: on-failure
 
 volumes:
   postgres_data:

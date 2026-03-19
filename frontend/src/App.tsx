@@ -14,20 +14,20 @@ const App: React.FC = () => {
   
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [mapCenter, setMapCenter] = useState<[number, number]>([20, 0]);
-  const [mapZoom, setMapZoom] = useState<number>(2);
+  const [mapZoom, setMapZoom] = useState<number>(8);
 
   // Center map on user location once available
   useEffect(() => {
     if (userLocation) {
       setMapCenter(userLocation);
-      setMapZoom(5);
+      setMapZoom(8);
     }
   }, [userLocation]);
 
   const handleEventClick = useCallback((event: Event) => {
     if (event.coordinates) {
       setMapCenter([event.coordinates.lat, event.coordinates.lon]);
-      setMapZoom(5);
+      setMapZoom(8);
       
       if (window.innerWidth <= 768) {
         setSidebarOpen(false);

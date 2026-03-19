@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import React, { useEffect, useRef, useMemo } from 'react';
+import { MapContainer, TileLayer, Circle, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Event } from '../types';
 
@@ -41,14 +41,30 @@ const ViewChangeEmitter: React.FC<{ onViewChange: (lat: number, lon: number, rad
 
 const getCategoryColor = (category: string) => {
   const normalized = category.toLowerCase();
-  if (normalized.includes('military')) return '#ef4444';
-  if (normalized.includes('political')) return '#3b82f6';
-  if (normalized.includes('economic')) return '#22c55e';
-  if (normalized.includes('religious') || normalized.includes('symbolic')) return '#a855f7';
-  return '#3b82f6';
+  if (normalized.includes('military')) return '#dc2626';
+  if (normalized.includes('political')) return '#2563eb';
+  if (normalized.includes('economic')) return '#16a34a';
+  if (normalized.includes('religious') || normalized.includes('symbolic')) return '#9333ea';
+  return '#2563eb';
+};
+
+// Impact → consequence radius in meters
+const getImpactRadius = (impact: number) => {
+  const radii: Record<number, number> = { 1: 30000, 2: 60000, 3: 120000, 4: 250000, 5: 500000 };
+  return radii[impact] || 60000;
 };
 
 const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom, onViewChange }) => {
+  // Deduplicate by title, keeping highest impact instance
+  const uniqueEvents = useMemo(() => {
+    const map = new Map<string, Event>();
+    for (const e of events) {
+      const existing = map.get(e.title);
+      if (!existing || e.impact > existing.impact) map.set(e.title, e);
+    }
+    return Array.from(map.values());
+  }, [events]);
+
   return (
     <MapContainer center={mapCenter} zoom={mapZoom} className="map-root" zoomControl={false}>
       <TileLayer 
@@ -58,15 +74,16 @@ const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom, onViewC
       <MapController center={mapCenter} zoom={mapZoom} />
       {onViewChange && <ViewChangeEmitter onViewChange={onViewChange} />}
       
-      {events.map(event => event.coordinates && (
-        <CircleMarker 
+      {uniqueEvents.map(event => event.coordinates && (
+        <Circle 
           key={event.id}
           center={[event.coordinates.lat, event.coordinates.lon]}
-          radius={8 + event.impact * 2.5}
+          radius={getImpactRadius(event.impact)}
           fillColor={getCategoryColor(event.category)}
-          color="#ffffff"
-          weight={1.5}
-          fillOpacity={0.7}
+          color={getCategoryColor(event.category)}
+          weight={2}
+          fillOpacity={0.25}
+          opacity={0.8}
         >
           <Popup>
             <div className="modern-popup">
@@ -93,7 +110,7 @@ const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom, onViewC
               </div>
             </div>
           </Popup>
-        </CircleMarker>
+        </Circle>
       ))}
     </MapContainer>
   );
