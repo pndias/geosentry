@@ -1,6 +1,7 @@
 FROM fedora:latest
 
-RUN dnf -y install python3.13 python3.13-pip python3.13-devel gcc libpq-devel && dnf clean all
+RUN dnf -y install python3.13 python3.13-devel gcc libpq-devel && dnf clean all
+RUN python3.13 -m ensurepip
 
 WORKDIR /app
 COPY requirements.txt .
