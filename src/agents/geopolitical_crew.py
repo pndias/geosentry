@@ -1,9 +1,13 @@
 # © 2026 Pablo Dias. All rights reserved.
 
+import os
 from crewai import Agent, Task, Crew, Process, LLM
 from src.domain.entities import GeopoliticalEvent
 
-llm = LLM(model="ollama/llama3.2:3b", base_url="http://localhost:11434")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "ollama/llama3.2:3b")
+
+llm = LLM(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL)
 
 # --- Ethical and Plural Agent Configuration ---
 

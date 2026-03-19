@@ -3,85 +3,114 @@ version: '3.8'
 services:
   db:
     image: postgis/postgis:15-3.3
-    container_name: geosentry_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: geodata
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - geosentry
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   api:
+    image: geosentry/api:latest
     build:
       context: .
       dockerfile: docker/api.Dockerfile
-    container_name: geosentry_api
-    depends_on:
-      - db
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
     ports:
       - "8000:8000"
-    restart: on-failure
+    networks:
+      - geosentry
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
 
   agents:
+    image: geosentry/agents:latest
     build:
       context: .
       dockerfile: docker/agents.Dockerfile
-    container_name: geosentry_agents
-    depends_on:
-      - db
-      - ollama
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: ollama/llama3.2:3b
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
-    restart: on-failure
+    networks:
+      - geosentry
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   ingestion:
+    image: geosentry/ingestion:latest
     build:
       context: .
       dockerfile: docker/ingestion.Dockerfile
-    container_name: geosentry_ingestion
-    depends_on:
-      - db
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
-    restart: on-failure
+    networks:
+      - geosentry
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
   seed:
+    image: geosentry/seed:latest
     build:
       context: .
       dockerfile: docker/seed.Dockerfile
-    container_name: geosentry_seed
-    depends_on:
-      - db
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/geodata
       PYTHONPATH: /app
+    networks:
+      - geosentry
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
 
   frontend:
+    image: geosentry/frontend:latest
     build:
       context: .
       dockerfile: docker/frontend.Dockerfile
-    container_name: geosentry_ui
     ports:
       - "8080:80"
-    depends_on:
-      - api
+    networks:
+      - geosentry
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   ollama:
     image: ollama/ollama:latest
-    container_name: geosentry_ollama
     volumes:
       - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
+    networks:
+      - geosentry
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  geosentry:
+    driver: overlay
 
 volumes:
   postgres_data:

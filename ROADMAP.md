@@ -36,6 +36,10 @@ The system is based on an **Event-Driven Microservices Architecture (EDA)**, ful
 | **Database** | SQLite / PostGIS | Local flexibility and geospatial scalability. |
 | **Frontend** | React + Vite | Responsive and componentized Command Center interface. |
 
+| **Containerization** | Docker + Docker Swarm | Independent containers, overlay networking, replica scaling. |
+| **LLM Runtime** | Ollama (llama3.2:3b) | Local open-source model, no API keys required. |
+| **Reverse Proxy** | Nginx | Frontend serving and API proxying in production. |
+
 ---
 
 ## 📈 3. Development Roadmap
@@ -52,12 +56,22 @@ The system is based on an **Event-Driven Microservices Architecture (EDA)**, ful
 - [x] "Impact Alerts" system (Visual notifications and feed for Impact > 4).
 - [x] Sources Panel (Module for news citation transparency).
 
-### Phase 3: Agent Orchestration (Real-time Implementation)
+### Phase 3: Containerization & Orchestration (Completed)
+- [x] Each service (API, Agents, Ingestion, Frontend, DB, Ollama) as independent Docker container.
+- [x] Docker Swarm stack with overlay network, replica scaling, and rolling updates.
+- [x] Nginx reverse proxy for frontend → API routing.
+- [x] Environment-aware config: `DATABASE_URL`, `OLLAMA_BASE_URL`, `OLLAMA_MODEL`.
+- [x] `run-macos.sh`: Local macOS deploy with Ollama + llama3.2:3b.
+- [x] `run-swarm-fedora.sh`: Full Docker Swarm deploy on Fedora.
+- [x] Multi-stage frontend Dockerfile (Node build → nginx alpine).
+- [x] PostgreSQL (Docker) / SQLite (local) dual database support.
+
+### Phase 4: Agent Orchestration (Real-time Implementation)
 - [ ] Real scraper implementation (Search Agent).
 - [ ] CrewAI integration with search APIs (Serper.dev/Google).
 - [ ] Continuous database ingestion.
 
-### Phase 4: Simbolus Module and Social Impact (The Guide)
+### Phase 5: Simbolus Module and Social Impact (The Guide)
 - [ ] Historical text ingestion (Revelation and other prophetic texts).
 - [ ] Comparative analysis interface: "The Present mirroring the Past".
 - [ ] Offline/Low-bandwidth mode for conflict zones.

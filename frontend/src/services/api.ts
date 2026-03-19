@@ -1,6 +1,6 @@
 import { Event } from '../types';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 const FALLBACK_URL = 'http://localhost:8000';
 
 async function apiFetch(path: string): Promise<Event[]> {
