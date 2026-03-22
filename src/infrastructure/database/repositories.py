@@ -4,7 +4,7 @@ from math import radians, cos
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from src.domain.repositories import IEventRepository
-from src.domain.entities import GeopoliticalEvent, EventCategory, Coordinates
+from src.domain.entities import GeopoliticalEvent, EventCategory, EventContext, Coordinates
 from src.infrastructure.database.models import EventDB
 
 class SQLAlchemyEventRepository(IEventRepository):
@@ -20,6 +20,7 @@ class SQLAlchemyEventRepository(IEventRepository):
             category=EventCategory(e.category),
             analytical_summary=e.analytical_summary,
             coordinates=coordinates, impact=e.impact,
+            context=EventContext(e.context) if e.context else EventContext.REGIONAL,
             tags=e.tags or [], cited_sources=e.cited_sources or [],
             date=e.date, source_link=e.source_link,
         )
@@ -66,3 +67,7 @@ class SQLAlchemyEventRepository(IEventRepository):
 
     def create(self, event: GeopoliticalEvent) -> GeopoliticalEvent:
         pass
+
+    def list_by_context(self, context: str) -> List[GeopoliticalEvent]:
+        rows = self.db.query(EventDB).filter(EventDB.context == context).all()
+        return [self._to_entity(e) for e in rows]

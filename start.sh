@@ -27,8 +27,11 @@ fi
 source venv/bin/activate
 pip install -r requirements.txt --quiet || { echo "❌ pip install failed"; exit 1; }
 
-echo "🔌 Starting FastAPI server on port 8000..."
+echo "🌱 Seeding the database..."
 export PYTHONPATH=$PYTHONPATH:.
+./venv/bin/python3 seed_db.py
+
+echo "🔌 Starting FastAPI server on port 8000..."
 ./venv/bin/uvicorn src.api.main:app --host 127.0.0.1 --port 8000 > api.log 2>&1 &
 BACKEND_PID=$!
 
@@ -39,11 +42,7 @@ for i in $(seq 1 15); do
     sleep 1
 done
 
-# 2. Seed
-echo "🌱 Seeding the database..."
-./venv/bin/python3 seed_db.py
-
-# 3. Frontend
+# 2. Frontend
 echo "💻 Starting Frontend development server..."
 cd frontend
 npm install --silent > /dev/null 2>&1

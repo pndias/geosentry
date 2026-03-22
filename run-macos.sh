@@ -66,8 +66,9 @@ docker exec geosentry_ollama ollama pull llama3.2:3b 2>/dev/null || echo "   (mo
 
 # --- 5. Ready ---
 EVENTS=$(curl -sf http://localhost:8000/events | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "?")
+GLOBAL=$(curl -sf "http://localhost:8000/events?context=Global%20Threats" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "?")
 echo ""
-echo -e "${GREEN}✅ GeoSentry is running! ($EVENTS events loaded)${NC}"
+echo -e "${GREEN}✅ GeoSentry is running! ($EVENTS events loaded, $GLOBAL global threats)${NC}"
 echo "   Dashboard: http://localhost:8080"
 echo "   API Docs:  http://localhost:8000/docs"
 echo "   Ollama:    http://localhost:11434"

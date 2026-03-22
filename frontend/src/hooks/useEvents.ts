@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Event } from '../types';
+import { Event, EventContext } from '../types';
 import { eventService } from '../services/api';
 
 export const useEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [category, setCategory] = useState<string>('all');
+  const [context, setContext] = useState<EventContext | 'all'>('all');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
@@ -52,19 +53,26 @@ export const useEvents = () => {
   }, [fetchNearby, fetchAll]);
 
   const filteredEvents = useMemo(() => {
-    if (category === 'all') return events;
-    return events.filter(e => e.category.toLowerCase().includes(category.toLowerCase()));
-  }, [events, category]);
+    let filtered = events;
+    if (context !== 'all') {
+      filtered = filtered.filter(e => e.context === context);
+    }
+    if (category !== 'all') {
+      filtered = filtered.filter(e => e.category.toLowerCase().includes(category.toLowerCase()));
+    }
+    return filtered;
+  }, [events, category, context]);
 
-  const changeCategory = useCallback((newCategory: string) => {
-    setCategory(newCategory);
-  }, []);
+  const changeCategory = useCallback((newCategory: string) => setCategory(newCategory), []);
+  const changeContext = useCallback((newContext: EventContext | 'all') => setContext(newContext), []);
 
   return {
     events,
     filteredEvents,
     category,
+    context,
     changeCategory,
+    changeContext,
     loading,
     error,
     userLocation,

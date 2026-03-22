@@ -20,6 +20,11 @@ class IEventRepository(ABC):
         pass
 
     @abstractmethod
+    def list_by_context(self, context: str) -> List[GeopoliticalEvent]:
+        """List events filtered by context (e.g. Global Threats)."""
+        pass
+
+    @abstractmethod
     def create(self, event: GeopoliticalEvent) -> GeopoliticalEvent:
         """Create a new event."""
         pass

@@ -12,6 +12,7 @@ class EventDB(Base):
     lat = Column(Float, nullable=True, index=True)
     lon = Column(Float, nullable=True, index=True)
     impact = Column(Integer)
+    context = Column(String, default="Regional", index=True)
     tags = Column(JSON)
     cited_sources = Column(JSON)
     date = Column(String)  # ISO Format: YYYY-MM-DD

@@ -88,6 +88,7 @@ const EventMap: React.FC<EventMapProps> = ({ events, mapCenter, mapZoom, onViewC
           <Popup>
             <div className="modern-popup">
               <h3 style={{ color: getCategoryColor(event.category) }}>{event.title}</h3>
+              {event.context === 'Global Threats' && <span style={{ background: '#fff7ed', color: '#f97316', padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase' }}>Global Threat</span>}
               <p>{event.analytical_summary}</p>
               <div className="popup-footer" style={{ flexDirection: 'column', gap: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

@@ -230,6 +230,31 @@ REAL_EVENTS = [
 ]
 
 
+# Tags that indicate Global Threats scope
+GLOBAL_THREAT_TAGS = {
+    "nato", "brics", "un", "eu", "mercosur", "wef",
+    "war", "trade-war", "naval-blockade", "oil-shock",
+    "intervention", "oil", "energy", "hormuz",
+}
+
+GLOBAL_THREAT_TITLES_KEYWORDS = [
+    "nato", "brics", "un ", "strait of hormuz", "trade war",
+    "emergency tariff", "oil shock", "intervention",
+    "iran", "section 301", "cbam",
+]
+
+
+def _is_global_threat(event: dict) -> bool:
+    """Classify as Global Threats if it affects hemispheres, blocs, or could trigger international conflict."""
+    if event["impact"] >= 5:
+        return True
+    tags = set(t.lower() for t in event.get("tags", []))
+    if tags & GLOBAL_THREAT_TAGS:
+        return True
+    title_lower = event["title"].lower()
+    return any(kw in title_lower for kw in GLOBAL_THREAT_TITLES_KEYWORDS)
+
+
 def generate_events():
     """Generate events by using real events as anchors with geographic variation."""
     events = []
@@ -248,6 +273,7 @@ def generate_events():
                 lat=round(lat, 4),
                 lon=round(lon, 4),
                 impact=base["impact"],
+                context="Global Threats" if _is_global_threat(base) else "Regional",
                 tags=base["tags"],
                 cited_sources=base["sources"],
                 date=f"2026-03-{random.randint(1, 18):02d}",

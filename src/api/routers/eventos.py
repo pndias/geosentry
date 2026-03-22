@@ -19,8 +19,13 @@ def get_service(repo: IEventRepository = Depends(get_repository)) -> EventServic
     return EventService(repo)
 
 @router.get("", response_model=List[GeopoliticalEvent])
-async def list_events(service: EventService = Depends(get_service)):
-    """Retrieves the list of geopolitical events from the local database."""
+async def list_events(
+    context: str = Query(None, description="Filter by context: 'Regional' or 'Global Threats'"),
+    service: EventService = Depends(get_service),
+):
+    """Retrieves the list of geopolitical events, optionally filtered by context."""
+    if context:
+        return service.list_by_context(context)
     return service.list_events()
 
 @router.get("/nearby", response_model=List[GeopoliticalEvent])

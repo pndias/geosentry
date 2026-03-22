@@ -10,13 +10,12 @@ import EventMap from './components/EventMap';
 import './index.css';
 
 const App: React.FC = () => {
-  const { events, filteredEvents, category, changeCategory, loading, error, userLocation, fetchNearby } = useEvents();
+  const { events, filteredEvents, category, context, changeCategory, changeContext, loading, error, userLocation, fetchNearby } = useEvents();
   
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([20, 0]);
   const [mapZoom, setMapZoom] = useState<number>(8);
 
-  // Center map on user location once available
   useEffect(() => {
     if (userLocation) {
       setMapCenter(userLocation);
@@ -28,10 +27,7 @@ const App: React.FC = () => {
     if (event.coordinates) {
       setMapCenter([event.coordinates.lat, event.coordinates.lon]);
       setMapZoom(8);
-      
-      if (window.innerWidth <= 768) {
-        setSidebarOpen(false);
-      }
+      if (window.innerWidth <= 768) setSidebarOpen(false);
     }
   }, []);
 
@@ -39,9 +35,11 @@ const App: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      <button className="menu-toggle mobile-only" onClick={toggleSidebar}>
-        <Menu />
+      <button className="menu-toggle" onClick={toggleSidebar} aria-label="Toggle menu">
+        <Menu size={20} />
       </button>
+
+      {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar} />}
 
       <Sidebar 
         allEvents={events}
@@ -49,17 +47,17 @@ const App: React.FC = () => {
         onEventClick={handleEventClick}
         selectedCategory={category}
         setSelectedCategory={changeCategory}
+        selectedContext={context}
+        setSelectedContext={changeContext}
         isOpen={sidebarOpen}
         toggleSidebar={toggleSidebar}
       />
 
       <main className="main-content">
         <Header />
-
         <div className="map-view">
-          {error && <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded z-[1000]">{error}</div>}
-          {loading && <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded shadow-lg z-[1000]">Updating intelligence...</div>}
-          
+          {error && <div className="toast toast-error">{error}</div>}
+          {loading && <div className="toast toast-info">Updating intelligence...</div>}
           <EventMap 
             events={filteredEvents} 
             mapCenter={mapCenter} 

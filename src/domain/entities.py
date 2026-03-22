@@ -9,6 +9,10 @@ class EventCategory(str, Enum):
     ECONOMIC = "Economic"
     RELIGIOUS_SYMBOLIC = "Religious/Symbolic"
 
+class EventContext(str, Enum):
+    REGIONAL = "Regional"
+    GLOBAL_THREATS = "Global Threats"
+
 class Coordinates(BaseModel):
     lat: float = Field(..., description="Decimal latitude of the event location")
     lon: float = Field(..., description="Decimal longitude of the event location")
@@ -19,6 +23,7 @@ class GeopoliticalEvent(BaseModel):
     category: EventCategory = Field(..., description="Thematic classification")
     analytical_summary: str = Field(..., description="Summarized analysis of implications")
     coordinates: Optional[Coordinates] = Field(None, description="Geographic location")
+    context: EventContext = Field(default=EventContext.REGIONAL, description="Event scope: Regional or Global Threats")
     impact: int = Field(..., ge=1, le=5, description="Global impact from 1 to 5")
     tags: List[str] = Field(default_factory=list)
     cited_sources: List[str] = Field(default_factory=list)

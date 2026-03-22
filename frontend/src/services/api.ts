@@ -16,7 +16,10 @@ async function apiFetch(path: string): Promise<Event[]> {
 }
 
 export const eventService = {
-  fetchEvents: () => apiFetch('/events'),
+  fetchEvents: (context?: string) => {
+    const params = context ? `?context=${encodeURIComponent(context)}` : '';
+    return apiFetch(`/events${params}`);
+  },
   fetchNearby: (lat: number, lon: number, radiusKm = 2000) =>
     apiFetch(`/events/nearby?lat=${lat}&lon=${lon}&radius_km=${radiusKm}`),
 };

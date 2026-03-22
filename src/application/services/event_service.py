@@ -17,3 +17,7 @@ class EventService:
 
     def get_event(self, event_id: int) -> Optional[GeopoliticalEvent]:
         return self.repository.get_by_id(event_id)
+
+    def list_by_context(self, context: str) -> List[GeopoliticalEvent]:
+        """Use case: List events filtered by context."""
+        return self.repository.list_by_context(context)
